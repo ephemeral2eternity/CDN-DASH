@@ -10,6 +10,7 @@ from dash.utils import *
 from qoe.dash_chunk_qoe import *
 from dash.mpd_parser import *
 from dash.download_chunk import *
+from dash.fault_tolerance import *
 from client_utils import *
 
 ## ==================================================================================================
@@ -18,25 +19,22 @@ from client_utils import *
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
 def cdn_client(srv_addr, video_name):
+	## Define all parameters used in this client
+	alpha = 0.1
+	retry_num = 10
 
 	## ==================================================================================================
 	## Client name and info
 	client = str(socket.gethostname())
 	cur_ts = time.strftime("%m%d%H%M")
-	client_ID = client + "_" + cur_ts + "_cdn"
+	client_ID = client + "_" + cur_ts
 
 	## ==================================================================================================
 	## Parse the mpd file for the streaming video
 	## ==================================================================================================
-	rsts = mpd_parser(srv_addr, video_name)
-
-	### ===========================================================================================================
-	## Add mpd_parser failure handler
-	### ===========================================================================================================
-	trial_time = 0
-	while (not rsts) and (trial_time < 10):
-		rsts = mpd_parser(srv_addr, video_name)
-		trial_time = trial_time + 1
+	rsts = ft_mpd_parser(srv_addr, retry_num, video_name)
+	if not rsts:
+		return
 
 	### ===========================================================================================================
 	## Read parameters from dash.mpd_parser
@@ -69,12 +67,25 @@ def cdn_client(srv_addr, video_name):
 	## ==================================================================================================
 	curBuffer = 0
 	chunk_download = 0
+
+	## Traces to write out
+	client_tr = {}
+	http_errors = {}
+
+	## Download initial chunk
 	loadTS = time.time()
 	print "[" + client_ID + "] Start downloading video " + video_name + " at " + \
 	datetime.datetime.fromtimestamp(int(loadTS)).strftime("%Y-%m-%d %H:%M:%S") + \
 	" from server : " + srv_addr
 
-	(vchunk_sz, chunk_srv_ip) = download_chunk(srv_addr, video_name, vidInit)
+	(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(srv_addr, retry_num, video_name, vidInit)
+	http_errors.update(error_codes)
+	if vchunk_sz == 0:
+		## Write out traces after finishing the streaming
+		writeTrace(client_ID + "_cdn", client_tr)
+		writeHTTPError(client_ID, http_errors)
+		return
+
 	startTS = time.time()
 	print "[" + client_ID + "] Start playing video at " + datetime.datetime.fromtimestamp(int(startTS)).strftime("%Y-%m-%d %H:%M:%S")
 	est_bw = vchunk_sz * 8 / (startTS - loadTS)
@@ -83,10 +94,6 @@ def cdn_client(srv_addr, video_name):
 	chunk_download += 1
 	curBuffer += chunkLen
 
-	## Traces to write out
-	client_tr = {}
-	alpha = 0.1
-
 	## ==================================================================================================
 	# Start streaming the video
 	## ==================================================================================================
@@ -94,14 +101,13 @@ def cdn_client(srv_addr, video_name):
 		nextRep = findRep(sortedVids, est_bw, curBuffer, minBuffer)
 		vidChunk = reps[nextRep]['name'].replace('$Number$', str(chunkNext))
 		loadTS = time.time();
-		(vchunk_sz, chunk_srv_ip) = download_chunk(srv_addr, video_name, vidChunk)
-		
-		## Try 10 times to download the chunk
-		error_num = 0
-		while (vchunk_sz == 0) and (error_num < 10):
-			# Try to download again the chunk
-			(vchunk_sz, chunk_srv_ip) = download_chunk(srv_addr, video_name, vidChunk)
-			error_num = error_num + 1
+		(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(srv_addr, retry_num, video_name, vidInit)
+		http_errors.update(error_codes)
+		if vchunk_sz == 0:
+			## Write out traces after finishing the streaming
+			writeTrace(client_ID + "_cdn", client_tr)
+			writeHTTPError(client_ID, http_errors)
+			return
 
 		curTS = time.time()
 		rsp_time = curTS - loadTS
@@ -121,10 +127,10 @@ def cdn_client(srv_addr, video_name):
 		curBW = num(reps[nextRep]['bw'])
 		chunk_QoE = computeQoE(freezingTime, curBW, maxBW)
 
-		print "|---", str(int(curTS)), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_QoE), "---|---", \
+		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_QoE), "---|---", \
 						str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
 		
-		client_tr[chunkNext] = dict(TS=int(curTS), Representation=nextRep, QoE=chunk_QoE, Buffer=curBuffer, \
+		client_tr[chunkNext] = dict(TS=curTS, Representation=nextRep, QoE=chunk_QoE, Buffer=curBuffer, \
 			Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time)
 			
 		# Update iteration information
@@ -137,10 +143,6 @@ def cdn_client(srv_addr, video_name):
 		chunkNext += 1
 
 	## Write out traces after finishing the streaming
-	writeTrace(client_ID, client_tr)
-
-	## If tmp path exists, deletes it.
-	if os.path.exists('./tmp'):
-		shutil.rmtree('./tmp')
-
+	writeTrace(client_ID + "_cdn", client_tr)
+	writeHTTPError(client_ID, http_errors)
 	return

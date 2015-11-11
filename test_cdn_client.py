@@ -19,6 +19,7 @@ client_name = getMyName()
 
 ## Denote the server info
 srv_addr = 'www.cmu-agens.tk.global.prod.fastly.net/videos/'
+# srv_addr = '23.251.129.31'
 video_name = 'BBB'
 
 ### Get the server to start streaming

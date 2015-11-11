@@ -1,9 +1,10 @@
 import os
-import urllib2, socket, urlparse
+import urllib2, socket, urlparse, httplib
 
 def download_chunk(server_addr, vidName, chunk_name):
 	url = 'http://' + server_addr + '/' + vidName + '/' + chunk_name
 	file_size = 0
+	srv_ip_addr = ''
 
 	try:
 		u = urllib2.urlopen(url)
@@ -37,9 +38,15 @@ def download_chunk(server_addr, vidName, chunk_name):
 		# print status,
 		# print "Downloaded server address: ", srv_ip_addr
 
+		rsp_code = str(u.getcode())
+
 		f.close()
 		u.close()
+	except urllib2.HTTPError, err:
+		rsp_code = str(err.code)
+	except urllib2.URLError, e:
+		rsp_code = str(e.code)
 	except:
-		pass
+		rsp_code = 'Unknown'
 
-	return (file_size, srv_ip_addr)
+	return (file_size, srv_ip_addr, rsp_code)

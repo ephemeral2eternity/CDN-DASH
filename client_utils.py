@@ -60,8 +60,28 @@ def writeTrace(client_ID, client_tr):
 		json.dump(client_tr, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
 
 	## If tmp path exists, deletes it.
+	if os.path.exists('./tmp'):
+		shutil.rmtree('./tmp')
+
 	if os.path.exists(os.getcwd() + "/tmp/"):
 		shutil.rmtree(os.getcwd() + "/tmp/")
+
+## ==================================================================================================
+# Write 4xx and 5xx HTTP request errors into json file with client name and timestamp
+# @input : client_ID --- the client ID to write traces
+# 		   error_code_tr --- 4xx and 5xx HTTP request error codes logged with timestamp and client name
+## ==================================================================================================
+def writeHTTPError(client_ID, error_code_tr):
+	if error_code_tr:
+		trFolder = os.getcwd() + "/dataQoE/"
+		# Create a cache folder locally
+		try:
+	        	os.stat(trFolder)
+		except:
+	        	os.mkdir(trFolder)
+		trFileName = trFolder + client_ID + "_httperr.json"
+		with open(trFileName, 'w') as outfile:
+			json.dump(error_code_tr, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
 
 ## ==================================================================================================
 # Write out Error Client Traces
