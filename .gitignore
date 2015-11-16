@@ -58,3 +58,6 @@ target/
 
 # Json data
 *.json
+
+# Experimental Results
+dataQoE/
