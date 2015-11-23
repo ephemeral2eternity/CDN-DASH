@@ -20,6 +20,7 @@ client_name = getMyName()
 ## Denote the server info
 # srv_addr = 'www.cmu-agens.tk.global.prod.fastly.net/videos/'
 # srv_addr = '23.251.129.31'
+# srv_addr = 'cache-01.cloudapp.net/videos/'
 srv_addr = 'az833905.vo.msecnd.net/videos/'
 video_name = 'BBB'
 

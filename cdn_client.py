@@ -97,11 +97,11 @@ def cdn_client(srv_addr, video_name):
 	## ==================================================================================================
 	# Start streaming the video
 	## ==================================================================================================
-	while (chunkNext * chunkLen < vidLength) :
+	while (chunkNext * chunkLen < vidLength):
 		nextRep = findRep(sortedVids, est_bw, curBuffer, minBuffer)
 		vidChunk = reps[nextRep]['name'].replace('$Number$', str(chunkNext))
 		loadTS = time.time();
-		(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(srv_addr, retry_num, video_name, vidInit)
+		(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(srv_addr, retry_num, video_name, vidChunk)
 		http_errors.update(error_codes)
 		if vchunk_sz == 0:
 			## Write out traces after finishing the streaming
@@ -111,7 +111,7 @@ def cdn_client(srv_addr, video_name):
 
 		curTS = time.time()
 		rsp_time = curTS - loadTS
-		est_bw = vchunk_sz * 8 / (curTS - loadTS)
+		est_bw = vchunk_sz * 8 / rsp_time
 		time_elapsed = curTS - preTS
 
 		# Compute freezing time
@@ -126,6 +126,8 @@ def cdn_client(srv_addr, video_name):
 		# Compute QoE of a chunk here
 		curBW = num(reps[nextRep]['bw'])
 		chunk_QoE = computeQoE(freezingTime, curBW, maxBW)
+
+		# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
 
 		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_QoE), "---|---", \
 						str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
