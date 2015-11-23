@@ -15,25 +15,19 @@ from client_utils import *
 
 ## ==================================================================================================
 # define the simple client agent that only downloads videos from denoted server
-# @input : srv_addr ---- the server name address 
+# @input : cdn_lists ---- the dict of cdn addresses as keys initialized with QoE they have as values
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
-def cdn_client(srv_addr, video_name, method=None):
+def adaptive_cdn_client(cdn_lists, video_name):
 	## Define all parameters used in this client
-	alpha = 0.5
+	alpha = 0.1
 	retry_num = 10
-
-	## CDN SQS
-	CDN_SQS = 5.0
 
 	## ==================================================================================================
 	## Client name and info
 	client = str(socket.gethostname())
 	cur_ts = time.strftime("%m%d%H%M")
-	if method is not None:
-		client_ID = client + "_" + cur_ts + "_" + method
-	else:
-		client_ID = client + "_" + cur_ts
+	client_ID = client + "_" + cur_ts
 
 	## ==================================================================================================
 	## Parse the mpd file for the streaming video
@@ -111,7 +105,7 @@ def cdn_client(srv_addr, video_name, method=None):
 		http_errors.update(error_codes)
 		if vchunk_sz == 0:
 			## Write out traces after finishing the streaming
-			writeTrace(client_ID, client_tr)
+			writeTrace(client_ID + "_cdn", client_tr)
 			writeHTTPError(client_ID, http_errors)
 			return
 
@@ -133,9 +127,6 @@ def cdn_client(srv_addr, video_name, method=None):
 		curBW = num(reps[nextRep]['bw'])
 		chunk_QoE = computeQoE(freezingTime, curBW, maxBW)
 
-		CDN_SQS = (1 - alpha) * CDN_SQS + alpha * chunk_QoE
-		print CDN_SQS
-
 		# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
 
 		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_QoE), "---|---", \
@@ -154,6 +145,6 @@ def cdn_client(srv_addr, video_name, method=None):
 		chunkNext += 1
 
 	## Write out traces after finishing the streaming
-	writeTrace(client_ID, client_tr)
-	writeTrace(client_ID + "_httperr", http_errors)
-	return CDN_SQS
+	writeTrace(client_ID + "_cdn", client_tr)
+	writeHTTPError(client_ID, http_errors)
+	return
