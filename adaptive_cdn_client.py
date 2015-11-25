@@ -148,10 +148,11 @@ def adaptive_cdn_client(cdn_objs, video_name, method=None):
 
 		# Compute QoE of a chunk here
 		curBW = num(reps[nextRep]['bw'])
-		chunk_QoE = computeQoE(freezingTime, curBW, maxBW)
+		chunk_linear_QoE = computeLinQoE(freezingTime, curBW, maxBW)
+		chunk_cascading_QoE = computeCasQoE(freezingTime, curBW, maxBW)
 
 		if chunkNext > WARMUP_PERIOD:
-			cdn_objs[selected_cdn]['QoE'] = cdn_objs[selected_cdn]['QoE'] * (1 - alpha) + chunk_QoE * alpha
+			cdn_objs[selected_cdn]['QoE'] = cdn_objs[selected_cdn]['QoE'] * (1 - alpha) + chunk_cascading_QoE * alpha
 			## ======================================================================================
 			## Select the CDN according to QoE
 			selected_cdn = select_best_cdn(cdn_objs)
@@ -163,10 +164,10 @@ def adaptive_cdn_client(cdn_objs, video_name, method=None):
 			cur_sqs[cdn] = cdn_objs[cdn]['QoE']
 		sqs_tr[curTS] = cur_sqs
 
-		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_QoE), "---|---", \
+		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", str(chunk_cascading_QoE), "---|---", \
 						str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", selected_cdn, "---|---", str(rsp_time), "---|"
 		
-		client_tr[chunkNext] = dict(TS=curTS, Representation=nextRep, QoE=chunk_QoE, Buffer=curBuffer, \
+		client_tr[chunkNext] = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
 			Freezing=freezingTime, Server=chunk_srv_ip, CDN = selected_cdn, Response=rsp_time)
 			
 		# Update iteration information

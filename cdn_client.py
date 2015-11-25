@@ -131,17 +131,18 @@ def cdn_client(srv_addr, video_name, method=None):
 
 		# Compute QoE of a chunk here
 		curBW = num(reps[nextRep]['bw'])
-		chunk_QoE = computeQoE(freezingTime, curBW, maxBW)
+		chunk_linear_QoE = computeLinQoE(freezingTime, curBW, maxBW)
+		chunk_cascading_QoE = computeCasQoE(freezingTime, curBW, maxBW)
 
-		CDN_SQS = (1 - alpha) * CDN_SQS + alpha * chunk_QoE
+		CDN_SQS = (1 - alpha) * CDN_SQS + alpha * chunk_cascading_QoE
 		print CDN_SQS
 
 		# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
 
-		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_QoE), "---|---", \
-						str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
+		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
+						str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
 		
-		client_tr[chunkNext] = dict(TS=curTS, Representation=nextRep, QoE=chunk_QoE, Buffer=curBuffer, \
+		client_tr[chunkNext] = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
 			Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time)
 			
 		# Update iteration information

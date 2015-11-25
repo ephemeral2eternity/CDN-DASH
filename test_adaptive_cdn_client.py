@@ -30,11 +30,11 @@ cdns = {
 			'Fastly' : {'url' : 'www.cmu-agens.tk.global.prod.fastly.net/videos/', 'QoE': 5.0}
 		}
 
-methods = ['Azure', 'Fastly', 'Azure', ' Fastly', 'AdaptCDN', 'AdaptCDN']
+methods = ['Azure', 'Fastly', 'Azure', 'AdaptCDN', 'AdaptCDN', 'AdaptCDN']
 video_name = 'BBB'
 
 ### Get the server to start streaming
-for i in range(6):
+for i in range(1):
 	cur_ts = time.time()
 
 	## Testing rtt based server selection
