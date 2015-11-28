@@ -57,7 +57,7 @@ docs/_build/
 target/
 
 # Json data
-*.json
+# *.json
 
 # Experimental Results
 dataQoE/
