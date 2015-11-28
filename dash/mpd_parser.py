@@ -17,7 +17,7 @@ def mpd_parser(server_address, videoName):
 	mpdFile = 'stream.mpd'
 
 	url = 'http://' + server_address + '/' + videoName + '/' + mpdFile
-	# print "MPD URL: ", url
+	print "MPD URL: ", url
 	#r = requests.get(url)
 
 	try:
@@ -27,6 +27,7 @@ def mpd_parser(server_address, videoName):
 		# mpdString = str(r.content)
 		# print mpdString
 	except:
+		print "Failed to get the url :", url
 		return {}
 
 	representations = {}
