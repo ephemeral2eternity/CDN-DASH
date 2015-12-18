@@ -63,3 +63,4 @@ target/
 dataQoE/
 tmp/
 config/cdn-qoes.json
+.idea/
