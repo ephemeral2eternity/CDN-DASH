@@ -5,7 +5,7 @@ from subprocess import Popen, PIPE
 import re
 import sys
 
-def extract_number(s,notfound='NOT_FOUND'):
+def extract_number(s):
     regex=r'[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?'
     return re.findall(regex,s)
 
@@ -14,7 +14,7 @@ def extractPingInfo(pingStr):
     pingData = {}
     for curData in curDataList:
         dataStr = curData.split('=')
-        dataVal = extract_number(dataStr[1],notfound='NOT_FOUND')
+        dataVal = extract_number(dataStr[1])
         pingData[dataStr[0]] = float(dataVal[0])
     return pingData
 
