@@ -13,9 +13,10 @@ def extractPingInfo(pingStr):
     curDataList = pingStr.split()
     pingData = {}
     for curData in curDataList:
-        dataStr = curData.split('=')
-        dataVal = extract_number(dataStr[1])
-        pingData[dataStr[0]] = float(dataVal[0])
+	if '=' in curData:
+        	dataStr = curData.split('=')
+        	dataVal = extract_number(dataStr[1])
+        	pingData[dataStr[0]] = float(dataVal[0])
     return pingData
 
 ## Call system command to ping a
