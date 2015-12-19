@@ -13,10 +13,10 @@ def extractPingInfo(pingStr):
     curDataList = pingStr.split()
     pingData = {}
     for curData in curDataList:
-	if '=' in curData:
-        	dataStr = curData.split('=')
-        	dataVal = extract_number(dataStr[1])
-        	pingData[dataStr[0]] = float(dataVal[0])
+        if '=' in curData:
+            dataStr = curData.split('=')
+            dataVal = extract_number(dataStr[1])
+            pingData[dataStr[0]] = float(dataVal[0])
     return pingData
 
 ## Call system command to ping a
@@ -54,6 +54,14 @@ def parsePingRst(pingString, count):
             print curDataDict
             rtts.append(curDataDict['time'])
     return rtts
+
+def pingVMs(vmList):
+    srvRTTs = {}
+    srvNames = vmList.keys()
+    for srv in srvNames:
+        mnRTT = getMnRTT(vmList[srv]['ip'], 5)
+        srvRTTs[srv] = mnRTT
+    return srvRTTs
 
 if __name__ == "__main__":
     mnRTT = getMnRTT('130.211.180.109')

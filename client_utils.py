@@ -38,10 +38,28 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
 	fileHandler = logging.FileHandler(log_file, mode='w')
 	streamHandler = logging.StreamHandler()
 	streamHandler.setFormatter(formatter)
-	
+
 	l.setLevel(level)
 	l.addHandler(fileHandler)
-	l.addHandler(streamHandler) 
+	l.addHandler(streamHandler)
+
+## ==================================================================================================
+# Write JSON file to the dataQoE folder
+# @input : json_file_name --- json file name
+# 		   json_var --- json variable
+## ==================================================================================================
+def writeJson(json_file_name, json_var):
+	trFolder = os.getcwd() + "/dataQoE/"
+	# Create a cache folder locally
+	try:
+		os.stat(trFolder)
+	except:
+		os.mkdir(trFolder)
+
+	if json_var:
+		trFileName = trFolder + json_file_name + ".json"
+		with open(trFileName, 'w') as outfile:
+			json.dump(json_var, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
 
 ## ==================================================================================================
 # Finished steaming videos, write out traces
@@ -52,10 +70,10 @@ def writeTrace(client_ID, client_tr):
 	trFolder = os.getcwd() + "/dataQoE/"
 	# Create a cache folder locally
 	try:
-        	os.stat(trFolder)
+		os.stat(trFolder)
 	except:
-        	os.mkdir(trFolder)
-      
+		os.mkdir(trFolder)
+
 	if client_tr:
 		trFileName = trFolder + client_ID + ".json"
 		with open(trFileName, 'w') as outfile:
@@ -133,7 +151,7 @@ def local_fault_msg_logger(fault_msg_obj):
 def local_recovery_msg_logger(recovery_msg_obj):
 	recovery_logger = logging.getLogger('recovery')
 	recovery_msg = datetime.datetime.now().strftime("%m%d-%H%M") + ", " + \
-					recovery_msg_obj['client'] + ", " + recovery_msg_obj['faulty_node'] + ", " + recovery_msg_obj['recovery_node'] + ", " + recovery_msg_obj['recovery_peer'] + \
-					", "  + "{:10.4f}".format(recovery_msg_obj['qoe']) + ", " + "{:10.4f}".format(recovery_msg_obj['recovery_qoe']) + ", " + str(recovery_msg_obj['video']) + \
-					", "  + "{:10.4f}".format(recovery_msg_obj['recovery_time']) + ", " + str(recovery_msg_obj['msg_type']) + ", " + recovery_msg_obj['msg']
+				   recovery_msg_obj['client'] + ", " + recovery_msg_obj['faulty_node'] + ", " + recovery_msg_obj['recovery_node'] + ", " + recovery_msg_obj['recovery_peer'] + \
+				   ", "  + "{:10.4f}".format(recovery_msg_obj['qoe']) + ", " + "{:10.4f}".format(recovery_msg_obj['recovery_qoe']) + ", " + str(recovery_msg_obj['video']) + \
+				   ", "  + "{:10.4f}".format(recovery_msg_obj['recovery_time']) + ", " + str(recovery_msg_obj['msg_type']) + ", " + recovery_msg_obj['msg']
 	recovery_logger.info(recovery_msg)

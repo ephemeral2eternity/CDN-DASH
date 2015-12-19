@@ -5,12 +5,32 @@ import re
 import sys
 from subprocess import Popen, PIPE
 
-def sys_traceroute(host):
+def isNum(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        try:
+            int(value)
+            return True
+        except ValueError:
+            return False
+
+def findAddr(tr_data):
+    item_ind = 0
+    for item in tr_data:
+        if len(item.split('.')) > 3:
+            return item_ind, item
+        item_ind += 1
+
+    return -1, '*'
+
+def traceroute(host):
     hops = dict()
     if sys.platform == 'win32':
         cmd = ['tracert', host]
     else:
-        cmd = ['traceroute', host]
+        cmd = ['traceroute', '-I', '-m', '30', host]
     p = Popen(cmd, stdout=PIPE)
     while True:
         line = p.stdout.readline()
@@ -24,29 +44,24 @@ def sys_traceroute(host):
             tr_line = re.sub(r'\(.*?\)', '', tr_line)
         tr_data = tr_line.split()
 
-        print tr_data
-
         if len(tr_data) < 1:
             continue
 
         if tr_data[0].isdigit():
             hop_id = int(tr_data[0])
             hop = {}
+            addr_ind, addr = findAddr(tr_data)
 
-            if sys.platform == 'win32':
-                hop['Addr'] = tr_data[-1]
-                tr_data.pop()
-                tr_data.pop(0)
-            else:
-                hop['Addr'] = tr_data[1]
-                tr_data.pop(1)
-                tr_data.pop(0)
+            hop['Addr'] = addr
+            if addr_ind > 0:
+                tr_data.pop(addr_ind)
+            tr_data.pop(0)
 
             hop_time_exist = False
             total_hop_time = 0
             probe_times = 0
             for tr_item in tr_data:
-                if tr_item.isdigit():
+                if isNum(tr_item):
                     total_hop_time += float(tr_item)
                     probe_times += 1
                     hop_time_exist = True
@@ -58,12 +73,20 @@ def sys_traceroute(host):
             if hop_time_exist:
                 hop['Time'] = total_hop_time / float(probe_times)
             else:
-                hop['Time'] = 5000
-            # print hop
+                hop['Time'] = '*'
+            print hop
             hops[hop_id] = hop
 
     return hops
 
+def trVMs(vmList):
+    srvHops = {}
+    srvNames = vmList.keys()
+    for srv in srvNames:
+        hops = traceroute(vmList[srv]['ip'])
+        srvHops[srv] = hops
+    return srvHops
+
 if __name__ == "__main__":
-    hops = sys_traceroute('130.211.180.109')
+    hops = traceroute('104.196.17.157')
     print hops
