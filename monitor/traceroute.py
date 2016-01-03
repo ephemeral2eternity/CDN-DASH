@@ -83,10 +83,10 @@ def trVMs(vmList):
     srvHops = {}
     srvNames = vmList.keys()
     for srv in srvNames:
-        hops = traceroute(vmList[srv]['ip'])
+        hops = traceroute(vmList[srv])
         srvHops[srv] = hops
     return srvHops
 
 if __name__ == "__main__":
-    hops = traceroute('104.196.17.157')
+    hops = traceroute('cmu-agens.azureedge.net')
     print hops
