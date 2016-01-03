@@ -23,7 +23,8 @@ video_name = 'BBB'
 
 ### Get the server to start streaming
 for i in range(5):
-	cur_ts = time.time()
+	cur_ts = time.strftime("%m%d%H%M")
+	client_ID = client_name + "_" + cur_ts
 
 	## ping all servers
 	mnRTT = getMnRTT(cdn_host)
@@ -34,9 +35,8 @@ for i in range(5):
 	print cdnHops
 
 	traceData = {'RTT' : mnRTT, 'Hops' : cdnHops}
-	writeJson("TR_" + client_name + "_" + str(int(cur_ts)), traceData)
+	writeJson("TR_" + client_ID, traceData)
 
 	## Testing rtt based server selection
-	# waitRandom(1, 100)
 	selected_srv_addr = cdn_host + '/videos/'
 	cdn_client(selected_srv_addr, video_name)
