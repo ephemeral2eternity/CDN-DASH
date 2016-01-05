@@ -22,7 +22,7 @@ cdn_host = 'cmu-agens.azureedge.net'
 video_name = 'BBB'
 
 ### Get the server to start streaming
-for i in range(5):
+for i in range(1):
 	cur_ts = time.strftime("%m%d%H%M")
 	client_ID = client_name + "_" + cur_ts
 
@@ -34,7 +34,7 @@ for i in range(5):
 	cdnHops = traceroute(cdn_host)
 	print cdnHops
 
-	traceData = {'RTT' : mnRTT, 'Hops' : cdnHops}
+	traceData = {'RTT' : mnRTT, 'Hops' : cdnHops, 'TS' : time.time()}
 	writeJson("TR_" + client_ID, traceData)
 
 	## Testing rtt based server selection
