@@ -2,6 +2,7 @@ import time
 import json
 import os
 import shutil
+import urllib2
 import logging
 import socket
 import datetime
@@ -9,9 +10,26 @@ import datetime
 # ================================================================================
 ## Get Client Agent Name
 # ================================================================================
+def get_ext_ip():
+	response = urllib2.urlopen("http://curlmyip.com")
+	ext_ip_line = response.read()
+	ext_ip = ext_ip_line.rstrip()
+	return ext_ip
+
+
+# ================================================================================
+## Get Client Agent Name
+# ================================================================================
 def getMyName():
 	hostname = socket.gethostname()
+	if '.' not in hostname:
+		ext_ip = get_ext_ip()
+		if ext_ip == "221.199.217.144":
+			hostname = "planetlab1.research.nicta.com.au"
+		else:
+			hostname = ext_ip
 	return hostname
+
 
 ## ==================================================================================================
 ### Setup logger files
@@ -29,6 +47,7 @@ def config_logger():
 	setup_logger('faults', faults_log_name)
 	setup_logger('recovery', recovery_log_name)
 
+
 ## ==================================================================================================
 ### Setup logger files
 ## ==================================================================================================
@@ -42,6 +61,7 @@ def setup_logger(logger_name, log_file, level=logging.INFO):
 	l.setLevel(level)
 	l.addHandler(fileHandler)
 	l.addHandler(streamHandler)
+
 
 ## ==================================================================================================
 # Write JSON file to the dataQoE folder
@@ -60,6 +80,7 @@ def writeJson(json_file_name, json_var):
 		trFileName = trFolder + json_file_name + ".json"
 		with open(trFileName, 'w') as outfile:
 			json.dump(json_var, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
+
 
 ## ==================================================================================================
 # Finished steaming videos, write out traces
@@ -104,6 +125,7 @@ def writeHTTPError(client_ID, error_code_tr):
 			json.dump(error_code_tr, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
 '''
 
+
 ## ==================================================================================================
 # Write out Error Client Traces
 # @input : client_ID --- the client ID to write traces
@@ -117,6 +139,7 @@ def reportErrorQoE(client_ID, srv=None, trace=None):
 
 	client_tr["0"] = dict(TS=int(curTS), QoE=0, Server=srv, Representation=-1, Freezing=-1, Response=1000, Buffer=0)
 	writeTrace(client_ID, client_tr)
+
 
 ## ======================================================================== 
 # Log fault messages to client local log files
@@ -133,6 +156,7 @@ def local_fault_msg_logger(fault_msg_obj):
 				fault_msg_obj['client'] + ", " + fault_msg_obj['node'] + ", " + str(fault_msg_obj['video']) + ", " + \
 				"{:2.4f}".format(fault_msg_obj['qoe']) + ", " + str(fault_msg_obj['msg_type']) + ", " + fault_msg_obj['msg']
 	faults_logger.info(fault_msg)
+
 
 ## ======================================================================== 
 # Log recovery messages to client local log files
