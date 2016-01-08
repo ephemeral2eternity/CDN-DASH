@@ -18,7 +18,8 @@ from monitor.traceroute import *
 client_name = getMyName()
 
 ## Denote the server info
-cdn_host = 'cmu-agens.azureedge.net'
+# cdn_host = 'cmu-agens.azureedge.net'
+cdn_host = 'aws.cmu-agens.com'
 video_name = 'BBB'
 
 ### Get the server to start streaming
