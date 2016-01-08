@@ -6,6 +6,7 @@ import urllib2
 import logging
 import socket
 import datetime
+from ipinfo.ipinfo import *
 
 # ================================================================================
 ## Get Client Agent Name
@@ -22,11 +23,17 @@ def get_ext_ip():
 # ================================================================================
 def getMyName():
 	hostname = socket.gethostname()
+
 	if '.' not in hostname:
 		ext_ip = get_ext_ip()
+		myInfo = ipinfo(ext_ip)
+		if "hostname" in myInfo.keys():
+			if '.' in myInfo["hostname"]:
+				hostname = myInfo["hostname"]
 		if ext_ip == "221.199.217.144":
 			hostname = "planetlab1.research.nicta.com.au"
-		else:
+
+		if '.' not in hostname:
 			hostname = ext_ip
 	return hostname
 
@@ -106,7 +113,8 @@ def writeTrace(client_ID, client_tr):
 
 	if os.path.exists(os.getcwd() + "/tmp/"):
 		shutil.rmtree(os.getcwd() + "/tmp/")
-'''
+
+
 ## ==================================================================================================
 # Write 4xx and 5xx HTTP request errors into json file with client name and timestamp
 # @input : client_ID --- the client ID to write traces
@@ -117,13 +125,12 @@ def writeHTTPError(client_ID, error_code_tr):
 		trFolder = os.getcwd() + "/dataQoE/"
 		# Create a cache folder locally
 		try:
-	        	os.stat(trFolder)
+			os.stat(trFolder)
 		except:
-	        	os.mkdir(trFolder)
+			os.mkdir(trFolder)
 		trFileName = trFolder + client_ID + "_httperr.json"
 		with open(trFileName, 'w') as outfile:
 			json.dump(error_code_tr, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
-'''
 
 
 ## ==================================================================================================

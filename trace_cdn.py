@@ -10,16 +10,16 @@ import shutil
 import time
 from datetime import datetime
 from cdn_client import *
-from client_utils import *
 from monitor.ping import *
-from monitor.traceroute import *
+from monitor.get_hop_info import *
 
 ### Get client name and attache to the closest cache agent
 client_name = getMyName()
 
 ## Denote the server info
 # cdn_host = 'cmu-agens.azureedge.net'
-cdn_host = 'aws.cmu-agens.com'
+# cdn_host = 'aws.cmu-agens.com'
+cdn_host = 'd18lrcyaw704ym.cloudfront.net'
 video_name = 'BBB'
 
 ### Get the server to start streaming
@@ -32,12 +32,12 @@ for i in range(20):
 	print mnRTT
 
 	## Traceroute all srvs
-	cdnHops = traceroute(cdn_host)
+	cdnHops = get_hop_by_host(cdn_host)
 	print cdnHops
 
 	traceData = {'RTT' : mnRTT, 'Hops' : cdnHops, 'TS' : time.time()}
 	writeJson("TR_" + client_ID, traceData)
 
 	## Testing rtt based server selection
-	selected_srv_addr = cdn_host + '/videos/'
+	selected_srv_addr = cdn_host + '/videos'
 	cdn_client(selected_srv_addr, video_name)

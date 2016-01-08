@@ -62,5 +62,6 @@ target/
 # Experimental Results
 dataQoE/
 tmp/
+hopData/
 config/cdn-qoes.json
 .idea/
