@@ -20,10 +20,10 @@ client_name = getMyName()
 # cdn_host = 'cmu-agens.azureedge.net'
 # cdn_host = 'aws.cmu-agens.com'
 cdn_host = 'aws.cmu-agens.com'
-video_name = 'st'
+video_name = 'BBB'
 
 ### Get the server to start streaming
-for i in range(1):
+for i in range(10):
 
 	## Testing rtt based server selection
 	selected_srv_addr = cdn_host + '/videos/'
