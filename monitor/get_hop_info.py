@@ -23,11 +23,35 @@ def get_hop_by_user(hop_file):
             print hop_info
 
 
+def read_hop_info(hopinfo_path, hop_ip):
+    default_hop_path = hopinfo_path + hop_ip + ".json"
+    if os.path.exists(default_hop_path):
+        try:
+            hop_info = json.load(open(default_hop_path))
+        except:
+            os.remove(default_hop_path)
+            if is_ip(hop_ip):
+                hop_info = ipinfo(hop_ip)
+                save_ipinfo(hopinfo_path, hop_info)
+            else:
+                hop_info = {}
+    else:
+        if not is_ip(hop_ip):
+            hop_ip = host2ip(hop_ip)
+
+        if is_ip(hop_ip):
+            hop_info = ipinfo(hop_ip)
+            save_ipinfo(hopinfo_path, hop_info)
+        else:
+            hop_info = {}
+    return hop_info
+
+
 def get_hop_by_host(cdn_host):
     hop_data_folder = os.getcwd() + '/hopData/'
 
     hops = traceroute(cdn_host)
-    # print hops
+    print hops
 
     hop_ids = sorted(hops.keys(), key=int)
     for hop_id in hop_ids:
@@ -36,9 +60,8 @@ def get_hop_by_host(cdn_host):
             continue
 
         if not is_reserved(cur_hop_ip):
-            hop_info = ipinfo(cur_hop_ip)
-            save_ipinfo(hop_data_folder, hop_info)
-            # print hop_info
+            hop_info = read_hop_info(hop_data_folder, cur_hop_ip)
+            print hop_info
     return hops
 
 

@@ -8,8 +8,6 @@ import os
 import logging
 from dash.utils import *
 from qoe.dash_chunk_qoe import *
-from dash.mpd_parser import *
-from dash.download_chunk import *
 from dash.fault_tolerance import *
 from client_utils import *
 
@@ -25,10 +23,11 @@ def cdn_client(srv_addr, video_name, method=None):
 
 	## CDN SQS
 	CDN_SQS = 5.0
+	uniq_srvs = []
 
 	## ==================================================================================================
 	## Client name and info
-	client = str(socket.gethostname())
+	client = getMyName()
 	cur_ts = time.strftime("%m%d%H%M")
 	if method is not None:
 		client_ID = client + "_" + cur_ts + "_" + method
@@ -81,8 +80,8 @@ def cdn_client(srv_addr, video_name, method=None):
 	## Download initial chunk
 	loadTS = time.time()
 	print "[" + client_ID + "] Start downloading video " + video_name + " at " + \
-	datetime.datetime.fromtimestamp(int(loadTS)).strftime("%Y-%m-%d %H:%M:%S") + \
-	" from server : " + srv_addr
+		  datetime.datetime.fromtimestamp(int(loadTS)).strftime("%Y-%m-%d %H:%M:%S") + \
+		  " from server : " + srv_addr
 
 	(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(srv_addr, retry_num, video_name, vidInit)
 	http_errors.update(error_codes)
@@ -124,7 +123,7 @@ def cdn_client(srv_addr, video_name, method=None):
 		if time_elapsed > curBuffer:
 			freezingTime = time_elapsed - curBuffer
 			curBuffer = 0
-			# print "[AGENP] Client freezes for " + str(freezingTime)
+		# print "[AGENP] Client freezes for " + str(freezingTime)
 		else:
 			freezingTime = 0
 			curBuffer = curBuffer - time_elapsed
@@ -140,11 +139,14 @@ def cdn_client(srv_addr, video_name, method=None):
 		# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
 
 		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
-						str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
-		
+			str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
+
 		client_tr[chunkNext] = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
-			Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time)
-			
+									Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time)
+
+		if chunk_srv_ip not in uniq_srvs:
+			uniq_srvs.append(chunk_srv_ip)
+
 		# Update iteration information
 		curBuffer = curBuffer + chunkLen
 		if curBuffer > 30:
@@ -157,4 +159,4 @@ def cdn_client(srv_addr, video_name, method=None):
 	## Write out traces after finishing the streaming
 	writeTrace(client_ID, client_tr)
 	writeTrace(client_ID + "_httperr", http_errors)
-	return CDN_SQS
+	return client_ID, CDN_SQS, uniq_srvs
