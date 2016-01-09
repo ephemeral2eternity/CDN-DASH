@@ -4,24 +4,9 @@
 # chenw@cmu.edu
 import json
 import os
-from utils import *
 from monitor.traceroute import *
 from ipinfo.host2ip import *
 from ipinfo.ipinfo import *
-
-def get_hop_by_user(hop_file):
-    ### Get client name and attache to the closest cache agent
-    client_name = getMyName()
-    # client_name = '75-130-96-12.static.oxfr.ma.charter.com'
-    hop_data_folder = os.getcwd() + '/hopData/'
-    hops_on_user = json.load(open(hop_file))
-    if client_name in hops_on_user.keys():
-        hops = hops_on_user[client_name]
-        for hop in hops.keys():
-            hop_info = ipinfo(hop)
-            save_ipinfo(hop_data_folder, hop_info)
-            print hop_info
-
 
 def read_hop_info(hopinfo_path, hop_ip):
     default_hop_path = hopinfo_path + hop_ip + ".json"
