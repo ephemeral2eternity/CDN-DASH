@@ -63,5 +63,6 @@ target/
 dataQoE/
 tmp/
 hopData/
+data/
 config/cdn-qoes.json
 .idea/
