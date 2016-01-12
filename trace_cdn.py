@@ -17,9 +17,9 @@ from monitor.get_hop_info import *
 client_name = getMyName()
 
 ## Denote the server info
-# cdn_host = 'cmu-agens.azureedge.net'
+cdn_host = 'cmu-agens.azureedge.net'
 # cdn_host = 'aws.cmu-agens.com'
-cdn_host = 'aws.cmu-agens.com'
+# cdn_host = 'aws.cmu-agens.com'
 video_name = 'BBB'
 
 ### Get the server to start streaming

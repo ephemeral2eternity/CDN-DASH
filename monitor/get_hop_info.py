@@ -54,8 +54,8 @@ if __name__ == "__main__":
     ## Denote the server info
     # cdn_host = "40.122.125.188"
     # cdn_host = "aws.cmu-agens.com"
-    # cdn_host = "cmu-agens.azureedge.net"
-    # get_hop_by_host(cdn_host)
-    file_path = os.path.dirname(__file__)
-    hop_file = file_path + '/config/all_hops.json'
-    get_hop_by_user(hop_file)
+    cdn_host = "cmu-agens.azureedge.net"
+    get_hop_by_host(cdn_host)
+    # file_path = os.path.dirname(__file__)
+    # hop_file = file_path + '/config/all_hops.json'
+    # get_hop_by_user(hop_file)
