@@ -9,7 +9,7 @@ import logging
 import shutil
 import time
 from datetime import datetime
-from cdn_client import *
+from dash_client import *
 from test_utils import *
 from client_utils import *
 
@@ -31,7 +31,7 @@ for i in range(1):
 
 	## Testing rtt based server selection
 	# waitRandom(1, 100)
-	cdn_client(srv_addr, video_name)
+	dash_client(srv_addr, video_name)
 
 #time_elapsed = time.time() - cur_ts
 #if time_elapsed < 600:

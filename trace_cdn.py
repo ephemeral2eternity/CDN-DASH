@@ -9,7 +9,7 @@ import logging
 import shutil
 import time
 from datetime import datetime
-from cdn_client import *
+from dash_client import *
 from monitor.ping import *
 from monitor.get_hop_info import *
 
@@ -27,7 +27,7 @@ for i in range(10):
 
 	## Testing rtt based server selection
 	selected_srv_addr = cdn_host + '/videos/'
-	client_ID, CDN_SQS, uniq_srvs = cdn_client(selected_srv_addr, video_name)
+	client_ID, CDN_SQS, uniq_srvs = dash_client(selected_srv_addr, video_name)
 
 	all_srv_trace_data = {}
 	for srv in uniq_srvs:

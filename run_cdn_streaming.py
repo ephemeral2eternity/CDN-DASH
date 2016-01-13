@@ -11,8 +11,8 @@ import time
 import random
 import json
 from datetime import datetime
-from cdn_client import *
-from adaptive_cdn_client import *
+from dash_client import *
+from adaptive_client import *
 from test_utils import *
 from client_utils import *
 
@@ -52,7 +52,7 @@ if selected_method == "Adapt1":
 	adapt_cdn = {}
 	adapt_cdn['Azure'] = cdns['Azure'].copy()
 	adapt_cdn['CloudFront'] = cdns['CloudFront'].copy()
-	updated_adapt_cdn = adaptive_cdn_client(adapt_cdn, video_name, selected_method)
+	updated_adapt_cdn = adaptive_client(adapt_cdn, video_name, selected_method)
 	cdns['Azure'] = updated_adapt_cdn['Azure'].copy()
 	cdns['CloudFront'] = updated_adapt_cdn['CloudFront'].copy()
 elif selected_method == "Adapt2":
@@ -60,13 +60,13 @@ elif selected_method == "Adapt2":
 	adapt_cdn = {}
 	adapt_cdn['Azure'] = cdns['Azure'].copy()
 	adapt_cdn['Rackspace'] = cdns['Rackspace'].copy()
-	updated_adapt_cdn = adaptive_cdn_client(adapt_cdn, video_name, selected_method)
+	updated_adapt_cdn = adaptive_client(adapt_cdn, video_name, selected_method)
 	cdns['Azure'] = updated_adapt_cdn['Azure'].copy()
 	cdns['Rackspace'] = updated_adapt_cdn['Rackspace'].copy()
 elif selected_method in cdns.keys():
 	print "Use " + selected_method + " CDN to stream video!"
 	selected_url = cdns[selected_method]['url']
-	sqs = cdn_client(selected_url, video_name, selected_method)
+	sqs = dash_client(selected_url, video_name, selected_method)
 	cdns[selected_method]['QoE'] = sqs
 else:
 	print "[Error] Selected method is not available: ", selected_method
