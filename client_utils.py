@@ -32,6 +32,8 @@ def getMyName():
 				hostname = myInfo["hostname"]
 		if ext_ip == "221.199.217.144":
 			hostname = "planetlab1.research.nicta.com.au"
+		elif ext_ip == "221.199.217.145":
+			hostname = "planetlab2.research.nicta.com.au"
 
 		if '.' not in hostname:
 			hostname = ext_ip
