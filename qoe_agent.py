@@ -6,17 +6,19 @@ import json
 import shutil
 import os
 import logging
+import subprocess
 from dash.utils import *
 from qoe.dash_chunk_qoe import *
 from dash.fault_tolerance import *
 from client_utils import *
+from communication.post_info import *
 
 ## ==================================================================================================
 # define the simple client agent that only downloads videos from denoted server
-# @input : srv_addr ---- the server name address 
+# @input : srv_addr ---- the server name address
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
-def dash_client(srv_addr, video_name, method=None):
+def qoe_agent(cdn_host, video_name, locator, update_period=5):
 	## Define all parameters used in this client
 	alpha = 0.5
 	retry_num = 10
@@ -26,20 +28,20 @@ def dash_client(srv_addr, video_name, method=None):
 	uniq_srvs = []
 
 	## ==================================================================================================
-	## Client name and info
-	client = getMyName()
+	# Get Client INFO, streaming configuration file, CDN server and route to the CDN and report the route
+	# INFO to the anomaly locator agent
+	## ==================================================================================================
+	client_ip, client_info = get_ext_ip()
+	client = client_info["name"]
 	cur_ts = time.strftime("%m%d%H%M")
-	if method is not None:
-		client_ID = client + "_" + cur_ts + "_" + method
-	else:
-		client_ID = client + "_" + cur_ts
+	client_ID = client + "_" + cur_ts
 
-	## ==================================================================================================
-	## Parse the mpd file for the streaming video
-	## ==================================================================================================
-	rsts = ft_mpd_parser(srv_addr, retry_num, video_name)
+	rsts, srv_ip = ft_mpd_parser(cdn_host, retry_num, video_name)
 	if not rsts:
 		return
+
+	## Fork a process doing traceroute to srv_ip and report it to the locator.
+	fork_cache_client_info(locator, client_info, srv_ip)
 
 	### ===========================================================================================================
 	## Read parameters from dash.mpd_parser
@@ -81,9 +83,9 @@ def dash_client(srv_addr, video_name, method=None):
 	loadTS = time.time()
 	print "[" + client_ID + "] Start downloading video " + video_name + " at " + \
 		  datetime.datetime.fromtimestamp(int(loadTS)).strftime("%Y-%m-%d %H:%M:%S") + \
-		  " from server : " + srv_addr
+		  " from server : " + cdn_host
 
-	(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(srv_addr, retry_num, video_name, vidInit)
+	(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(cdn_host, retry_num, video_name, vidInit)
 	http_errors.update(error_codes)
 	if vchunk_sz == 0:
 		## Write out traces after finishing the streaming
@@ -106,7 +108,14 @@ def dash_client(srv_addr, video_name, method=None):
 		nextRep = findRep(sortedVids, est_bw, curBuffer, minBuffer)
 		vidChunk = reps[nextRep]['name'].replace('$Number$', str(chunkNext))
 		loadTS = time.time()
-		(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(srv_addr, retry_num, video_name, vidChunk)
+		(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(cdn_host, retry_num, video_name, vidChunk)
+
+		# If the client changes servers, get the traceroute to the new server.
+		if chunk_srv_ip != srv_ip:
+			srv_ip = chunk_srv_ip
+			## Fork a process doing traceroute to srv_ip and report it to the locator.
+			fork_cache_client_info(locator, client_info, srv_ip)
+
 		http_errors.update(error_codes)
 		if vchunk_sz == 0:
 			## Write out traces after finishing the streaming
@@ -151,6 +160,14 @@ def dash_client(srv_addr, video_name, method=None):
 		curBuffer = curBuffer + chunkLen
 		if curBuffer > 30:
 			time.sleep(curBuffer - 30)
+
+		## Update route info periodically
+		if (chunkNext % update_period == 0) and (chunkNext > 0):
+			isUpdated = updateRoute(locator, client_ip, srv_ip)
+			if isUpdated:
+				print "Updated the status of route successfully!"
+			else:
+				print "Failed to update the status of the existing route!"
 
 		preTS = curTS
 		chunk_download += 1

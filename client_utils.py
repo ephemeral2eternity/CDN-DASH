@@ -3,20 +3,21 @@ import json
 import os
 import shutil
 import urllib2
+import requests
 import logging
 import socket
 import datetime
+from monitor.get_hop_info import *
 from ipinfo.ipinfo import *
 
 # ================================================================================
 ## Get Client Agent Name
 # ================================================================================
 def get_ext_ip():
-	response = urllib2.urlopen("http://curlmyip.com")
-	ext_ip_line = response.read()
-	ext_ip = ext_ip_line.rstrip()
-	return ext_ip
-
+	ext_ip_info = ipinfo()
+	ext_ip = ext_ip_info['ip']
+	node_info = get_node_info(ext_ip)
+	return ext_ip, node_info
 
 # ================================================================================
 ## Get Client Agent Name
@@ -25,11 +26,10 @@ def getMyName():
 	hostname = socket.gethostname()
 
 	if '.' not in hostname:
-		ext_ip = get_ext_ip()
-		myInfo = ipinfo(ext_ip)
-		if "hostname" in myInfo.keys():
-			if '.' in myInfo["hostname"]:
-				hostname = myInfo["hostname"]
+		ext_ip, myInfo = get_ext_ip()
+		if "name" in myInfo.keys():
+			if '.' in myInfo["name"]:
+				hostname = myInfo["name"]
 		if ext_ip == "221.199.217.144":
 			hostname = "planetlab1.research.nicta.com.au"
 		elif ext_ip == "221.199.217.145":
@@ -38,7 +38,6 @@ def getMyName():
 		if '.' not in hostname:
 			hostname = ext_ip
 	return hostname
-
 
 ## ==================================================================================================
 ### Setup logger files

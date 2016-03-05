@@ -13,9 +13,9 @@ def download_chunk(server_addr, vidName, chunk_name):
 
 		# Create a cache folder locally
 		try:
-	        	os.stat(localCache)
+			os.stat(localCache)
 		except:
-	        	os.mkdir(localCache)
+			os.mkdir(localCache)
 
 		localFile = localCache + chunk_name.replace('/', '-')
 

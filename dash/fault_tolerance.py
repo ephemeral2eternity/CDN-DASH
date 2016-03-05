@@ -33,7 +33,7 @@ def ft_mpd_parser(retry_srv, retry_num, video_name):
 	error_num = 0
 	rsts = ''
 	while (not rsts) and (error_num < retry_num):
-		rsts = mpd_parser(retry_srv, video_name)
+		rsts, srv_ip = mpd_parser(retry_srv, video_name)
 		error_num += 1
 
-	return rsts
+	return rsts, srv_ip

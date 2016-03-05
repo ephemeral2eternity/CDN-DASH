@@ -18,9 +18,13 @@ def is_reserved(ip):
             return True
     return False
 
-def ipinfo(ip):
-    try:
+def ipinfo(ip=None):
+    if ip:
         url = 'http://ipinfo.io/' + ip
+    else:
+        url = 'http://ipinfo.io/'
+
+    try:
         resp = requests.get(url)
         hop_info = json.loads(resp.text)
     except:
@@ -33,6 +37,21 @@ def ipinfo(ip):
         hop_org_items = hop_org.split()
         hop_info['AS'] = hop_org_items[0]
         hop_info['ISP'] = " ".join(hop_org_items[1:])
+    else:
+        hop_info['AS'] = "unknown"
+        hop_info['ISP'] = "unknown"
+
+    if 'loc' in hop_info.keys():
+        locations = hop_info['loc'].split(',')
+        hop_info['latitude'] = float(locations[0])
+        hop_info['longitude'] = float(locations[1])
+    else:
+        hop_info['latitude'] = 0.0
+        hop_info['longitude'] = 0.0
+
+    if 'hostname' not in hop_info.keys():
+        hop_info['hostname'] = ip
+
     return hop_info
 
 def save_ipinfo(outPath, hop_info):

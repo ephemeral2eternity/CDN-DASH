@@ -2,6 +2,9 @@ import os
 #import requests     PlanetLab nodes do not have package requests
 import urllib2
 import re
+import sys
+import socket
+import urlparse
 import xml.etree.ElementTree as ET
 
 def num(s):
@@ -23,6 +26,7 @@ def mpd_parser(server_address, videoName):
 	try:
 		r = urllib2.Request(url)
 		f = urllib2.urlopen(r)
+		srv_ip_addr = socket.gethostbyname(urlparse.urlparse(f.geturl()).hostname)
 		mpdString = f.read()
 		# mpdString = str(r.content)
 		# print mpdString
@@ -64,4 +68,4 @@ def mpd_parser(server_address, videoName):
 	#	print item
 	f.close()
 
-	return {'representations' : representations, 'mediaDuration':mediaLength, 'minBufferTime': minBufferTime}
+	return {'representations' : representations, 'mediaDuration':mediaLength, 'minBufferTime': minBufferTime}, srv_ip_addr

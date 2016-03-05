@@ -61,7 +61,7 @@ def traceroute(host):
             hop = {}
             addr_ind, addr = findAddr(tr_data)
 
-            hop['Addr'] = addr
+            hop['name'] = addr
             if addr_ind > 0:
                 tr_data.pop(addr_ind)
             tr_data.pop(0)
@@ -80,16 +80,16 @@ def traceroute(host):
                     hop_time_exist = True
 
             if hop_time_exist:
-                hop['Time'] = total_hop_time / float(probe_times)
+                hop['time'] = total_hop_time / float(probe_times)
             else:
-                hop['Time'] = '*'
+                hop['time'] = '*'
             if len(ip_addrs) > 0:
-                hop['IP'] = ip_addrs[0][1:-1]
-            elif is_ip(hop['Addr']):
-                hop['IP'] = hop['Addr']
+                hop['ip'] = ip_addrs[0][1:-1]
+            elif is_ip(hop['name']):
+                hop['ip'] = hop['name']
             else:
-                hop['IP'] = '*'
-            print hop
+                hop['ip'] = '*'
+            # print hop
             hops[hop_id] = hop
 
     return hops
@@ -103,5 +103,5 @@ def trVMs(vmList):
     return srvHops
 
 if __name__ == "__main__":
-    hops = traceroute('40.122.125.188')
+    hops = traceroute('rs-cdn.cmu-agens.com')
     print hops
