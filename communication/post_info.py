@@ -1,6 +1,7 @@
 import urllib2
 import json
 import os
+from multiprocessing import Process
 from monitor.get_hop_info import *
 
 def report_route(locator, client_info):
@@ -33,12 +34,13 @@ def checkRouteCached(locator, client_ip, srv_ip):
     return isRouteCached
 
 def updateRoute(locator, client_ip, srv_ip):
-    url = "http://%s/locator/exist?client=%s&server=%s" % (locator, client_ip, srv_ip)
+    url = "http://%s/locator/update?client=%s&server=%s" % (locator, client_ip, srv_ip)
 
     isRouteUpdated = True
     try:
         response = urllib2.urlopen(url)
-        if response == "Yes":
+        response_str = response.read()
+        if response_str == "Yes":
             isRouteUpdated = True
         else:
             isRouteUpdated = False
@@ -67,13 +69,28 @@ def cache_client_info(locator, client_info, srv_ip):
             isSuccess = report_route(locator, client_info)
             tries += 1
 
-def fork_cache_client_info(locator, client_info, srv_ip):
-    tr_process = os.fork()
-    if tr_process == 0:
-        print "We are in the child process has PID = %d running the traceroute and client info reporting!" % os.getpid()
-        cache_client_info(locator, client_info, srv_ip)
+        if isSuccess:
+            print "Successfully report route from client ", client_ip, " to server ", srv_ip, " to the anomaly locator " \
+                    , "agent ", locator
+        else:
+            print "Failed to report route to anomaly locator agent:", locator
+
     else:
-        print "We are in the parent process and out child process has PID = %d running dash streaming!" % os.getpid()
+        print "Route from client ", client_ip, " to server ", srv_ip, " is cached in the anomaly locator!"
+
+
+def fork_cache_client_info(locator, client_info, srv_ip):
+    p = Process(target=cache_client_info, args=(locator, client_info, srv_ip))
+    p.start()
+    return p
+    # pid = os.fork()
+    #if pid == 0:
+    #    print "We are in the child process has PID = %d running the traceroute and client info reporting!" % os.getpid()
+    #    cache_client_info(locator, client_info, srv_ip)
+    #    sys.exit(0)
+    #else:
+    #    print "We are in the parent process and out child process has PID = %d running dash streaming!" % os.getpid()
+    #    return
 
 
 def route2str(full_route):

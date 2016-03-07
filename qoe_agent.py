@@ -18,7 +18,7 @@ from communication.post_info import *
 # @input : srv_addr ---- the server name address
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
-def qoe_agent(cdn_host, video_name, locator, update_period=5):
+def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 	## Define all parameters used in this client
 	alpha = 0.5
 	retry_num = 10
@@ -41,7 +41,7 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5):
 		return
 
 	## Fork a process doing traceroute to srv_ip and report it to the locator.
-	fork_cache_client_info(locator, client_info, srv_ip)
+	tr_proc = fork_cache_client_info(locator, client_info, srv_ip)
 
 	### ===========================================================================================================
 	## Read parameters from dash.mpd_parser
@@ -162,12 +162,15 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5):
 			time.sleep(curBuffer - 30)
 
 		## Update route info periodically
-		if (chunkNext % update_period == 0) and (chunkNext > 0):
-			isUpdated = updateRoute(locator, client_ip, srv_ip)
-			if isUpdated:
-				print "Updated the status of route successfully!"
-			else:
-				print "Failed to update the status of the existing route!"
+		if chunk_cascading_QoE > qoe_th:
+			if (chunkNext % update_period == 0) and (chunkNext > 0):
+				isUpdated = updateRoute(locator, client_ip, srv_ip)
+				if isUpdated:
+					print "Updated the status of route successfully!"
+				else:
+					print "Failed to update the status of the existing route!"
+		else:
+			print "Please add anomaly localization request here!"
 
 		preTS = curTS
 		chunk_download += 1
@@ -175,5 +178,8 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5):
 
 	## Write out traces after finishing the streaming
 	writeTrace(client_ID, client_tr)
-	writeTrace(client_ID + "_httperr", http_errors)
+	if http_errors:
+		writeTrace(client_ID + "_httperr", http_errors)
+
+	tr_proc.join(timeout=100)
 	return client_ID, CDN_SQS, uniq_srvs

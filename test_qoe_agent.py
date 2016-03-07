@@ -17,7 +17,7 @@ from monitor.get_hop_info import *
 # cdn_host = 'cmu-agens.azureedge.net'
 # cdn_host = 'aws.cmu-agens.com'
 cdn_host = 'az.cmu-agens.com'
-video_name = 'st'
+video_name = 'BBB'
 
 ### Get the server to start streaming
 locator = "40.76.72.2"
