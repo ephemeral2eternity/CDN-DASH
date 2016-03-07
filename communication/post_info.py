@@ -1,7 +1,7 @@
 import urllib2
 import json
 import os
-from multiprocessing import Process
+from multiprocessing import Process, freeze_support
 from monitor.get_hop_info import *
 
 def report_route(locator, client_info):
@@ -80,6 +80,7 @@ def cache_client_info(locator, client_info, srv_ip):
 
 
 def fork_cache_client_info(locator, client_info, srv_ip):
+
     p = Process(target=cache_client_info, args=(locator, client_info, srv_ip))
     p.start()
     return p

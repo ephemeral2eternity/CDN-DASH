@@ -163,13 +163,13 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 
 		## Update route info periodically
 		if chunk_cascading_QoE > qoe_th:
-			if (chunkNext % update_period == 0) and (chunkNext > 0):
+			if (chunkNext % update_period == 0) and (chunkNext > update_period - 1):
 				isUpdated = updateRoute(locator, client_ip, srv_ip)
 				if isUpdated:
 					print "Updated the status of route successfully!"
 				else:
 					print "Failed to update the status of the existing route!"
-		else:
+		elif (chunk_cascading_QoE <= qoe_th) and (chunkNext > update_period - 1):
 			print "Please add anomaly localization request here!"
 
 		preTS = curTS
