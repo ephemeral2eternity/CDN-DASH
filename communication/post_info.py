@@ -58,7 +58,8 @@ def cache_client_info(locator, client_info, srv_ip):
     if not isRouteCached:
         cdnHops = get_hop_by_host(srv_ip)
         srv_info = get_node_info(srv_ip)
-        cdnHops.append(srv_info)
+        if cdnHops[-1]['ip'] != srv_info['ip']:
+            cdnHops.append(srv_info)
         client_info['route'] = cdnHops
 
         # route_str = route2str(cdnHops)
