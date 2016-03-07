@@ -30,5 +30,3 @@ if __name__ == '__main__':
 		selected_srv_addr = cdn_host + '/videos/'
 		# client_ID, CDN_SQS, uniq_srvs = qoe_agent(selected_srv_addr, video_name, locator)
 		qoe_agent(selected_srv_addr, video_name, locator)
-
-		# writeJson("TR_" + client_ID, all_srv_trace_data)

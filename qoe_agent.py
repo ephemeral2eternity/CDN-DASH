@@ -27,6 +27,9 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 	CDN_SQS = 5.0
 	uniq_srvs = []
 
+	## Process pool
+	procs = []
+
 	## ==================================================================================================
 	# Get Client INFO, streaming configuration file, CDN server and route to the CDN and report the route
 	# INFO to the anomaly locator agent
@@ -42,6 +45,7 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 
 	## Fork a process doing traceroute to srv_ip and report it to the locator.
 	tr_proc = fork_cache_client_info(locator, client_info, srv_ip)
+	procs.append(tr_proc)
 
 	### ===========================================================================================================
 	## Read parameters from dash.mpd_parser
@@ -114,7 +118,8 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 		if chunk_srv_ip != srv_ip:
 			srv_ip = chunk_srv_ip
 			## Fork a process doing traceroute to srv_ip and report it to the locator.
-			fork_cache_client_info(locator, client_info, srv_ip)
+			tr_proc = fork_cache_client_info(locator, client_info, srv_ip)
+			procs.append(tr_proc)
 
 		http_errors.update(error_codes)
 		if vchunk_sz == 0:
@@ -171,6 +176,8 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 					print "Failed to update the status of the existing route!"
 		elif (chunk_cascading_QoE <= qoe_th) and (chunkNext > update_period - 1):
 			print "Please add anomaly localization request here!"
+			loc_p = fork_locate_anomaly(locator, client_ip, srv_ip)
+			procs.append(loc_p)
 
 		preTS = curTS
 		chunk_download += 1
@@ -181,5 +188,6 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 	if http_errors:
 		writeTrace(client_ID + "_httperr", http_errors)
 
-	tr_proc.join(timeout=100)
+	for p in procs:
+		p.join(timeout=100)
 	return client_ID, CDN_SQS, uniq_srvs

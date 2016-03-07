@@ -80,19 +80,30 @@ def cache_client_info(locator, client_info, srv_ip):
         print "Route from client ", client_ip, " to server ", srv_ip, " is cached in the anomaly locator!"
 
 
-def fork_cache_client_info(locator, client_info, srv_ip):
+def locate_anomaly(locator, client_ip, srv_ip):
+    url = "http://%s/locator/locate?client=%s&server=%s" % (locator, client_ip, srv_ip)
 
+    anomaly_info = {}
+    try:
+        response = urllib2.urlopen(url)
+        response_str = response.read()
+        anomaly_info = json.loads(response_str)
+        print "Located anomaly info:", anomaly_info
+    except:
+        print "Failed to locate the anomaly for streaming session from client ", client_ip, " to server ", srv_ip
+
+    return anomaly_info
+
+
+def fork_cache_client_info(locator, client_info, srv_ip):
     p = Process(target=cache_client_info, args=(locator, client_info, srv_ip))
     p.start()
     return p
-    # pid = os.fork()
-    #if pid == 0:
-    #    print "We are in the child process has PID = %d running the traceroute and client info reporting!" % os.getpid()
-    #    cache_client_info(locator, client_info, srv_ip)
-    #    sys.exit(0)
-    #else:
-    #    print "We are in the parent process and out child process has PID = %d running dash streaming!" % os.getpid()
-    #    return
+
+def fork_locate_anomaly(locator, client_ip, srv_ip):
+    p = Process(target=locate_anomaly, args=(locator, client_ip, srv_ip))
+    p.start()
+    return p
 
 
 def route2str(full_route):
@@ -102,4 +113,13 @@ def route2str(full_route):
 
     route_str = ','.join(str(e) for e in route_list)
     return route_str
+
+if __name__ == '__main__':
+    client_ip = "128.2.57.73"
+    server_ip = "72.21.81.200"
+    locator = "40.76.72.2"
+    anomaly_info = locate_anomaly(locator, client_ip, server_ip)
+    print anomaly_info
+
+
 
