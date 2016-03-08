@@ -115,7 +115,7 @@ def route2str(full_route):
     return route_str
 
 if __name__ == '__main__':
-    client_ip = "128.2.57.73"
+    client_ip = "128.237.172.152"
     server_ip = "72.21.81.200"
     locator = "40.76.72.2"
     anomaly_info = locate_anomaly(locator, client_ip, server_ip)

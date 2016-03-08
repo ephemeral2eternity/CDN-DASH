@@ -49,6 +49,15 @@ def ipinfo(ip=None):
         hop_info['latitude'] = 0.0
         hop_info['longitude'] = 0.0
 
+    if 'city' not in hop_info.keys():
+        hop_info['city'] = ''
+
+    if 'region' not in hop_info.keys():
+        hop_info['region'] = ''
+
+    if 'country' not in hop_info.keys():
+        hop_info['country'] = ''
+
     if 'hostname' not in hop_info.keys():
         hop_info['hostname'] = ip
 
