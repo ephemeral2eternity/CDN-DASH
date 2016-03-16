@@ -73,7 +73,7 @@ def connect_locator(manager, method="geo"):
     locators = get_locators(manager)
     client_info = ipinfo()
     if "No" in client_info['hostname']:
-        client_info['hostanme'] = socket.gethostname()
+        client_info['hostname'] = socket.gethostname()
 
     if method == "geo":
         connected_locator, connected_locator_ip = geo_connect(client_info, locators)
