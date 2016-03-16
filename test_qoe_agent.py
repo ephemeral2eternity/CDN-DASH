@@ -13,6 +13,7 @@ from qoe_agent import *
 from monitor.ping import *
 from multiprocessing import freeze_support
 from monitor.get_hop_info import *
+from communication.connect_locator import *
 
 ## Denote the server info
 # cdn_host = 'cmu-agens.azureedge.net'
@@ -24,9 +25,10 @@ if __name__ == '__main__':
 	video_name = 'BBB'
 
 	### Get the server to start streaming
-	locator = "40.76.72.2"
+	manager = "40.122.166.121"
 	for i in range(1):
 		## Testing rtt based server selection
+		locator = connect_locator(manager)
 		selected_srv_addr = cdn_host + '/videos/'
 		# client_ID, CDN_SQS, uniq_srvs = qoe_agent(selected_srv_addr, video_name, locator)
 		qoe_agent(selected_srv_addr, video_name, locator)

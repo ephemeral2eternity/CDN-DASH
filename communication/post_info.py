@@ -120,6 +120,3 @@ if __name__ == '__main__':
     locator = "40.76.72.2"
     anomaly_info = locate_anomaly(locator, client_ip, server_ip)
     print anomaly_info
-
-
-
