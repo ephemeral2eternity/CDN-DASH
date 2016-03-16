@@ -1,6 +1,7 @@
 import urllib2
 import json
 import os
+import socket
 from ipinfo.ipinfo import *
 from monitor.ping import *
 
@@ -62,6 +63,9 @@ def notify_manager(manager, method, client_info):
 def connect_locator(manager, method="geo"):
     locators = get_locators(manager)
     client_info = ipinfo()
+    if client_info['hostname'] == "No Hostname":
+        client_info['hostanme'] = socket.gethostname()
+
     if method == "geo":
         connected_locator = geo_connect(client_info, locators)
     elif method == "net":
