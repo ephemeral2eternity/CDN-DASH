@@ -29,22 +29,31 @@ def get_geo_dist(coord1, coord2):
 def geo_connect(client_info, locators):
     client_coords = [float(client_info['latitude']), float(client_info['longitude'])]
     geo_dist_dict = {}
+    locator_ips = {}
     for node in locators:
         node_name = node['name']
+        node_ip = node['ip']
+        locator_ips[node_name] = node_ip
         node_geo_dist = get_geo_dist(client_coords, [float(node['lat']), float(node['lon'])])
         geo_dist_dict[node_name] = node_geo_dist
 
     connected_locator = min(geo_dist_dict.items(), key=lambda x:x[1])[0]
-    return connected_locator
+    connected_locator_ip = locator_ips[connected_locator]
+    return connected_locator, connected_locator_ip
 
 def net_connect(locators):
     net_dist_dict = {}
+    locator_ips = {}
     for node in locators:
-        rtt = getMnRTT(node['ip'])
-        net_dist_dict[node['name']] = rtt
+        node_name = node['name']
+        node_ip = node['ip']
+        locator_ips[node_name] = node_ip
+        rtt = getMnRTT(node_ip)
+        net_dist_dict[node_name] = rtt
 
     connected_locator = min(net_dist_dict.items(), key=lambda x:x[1])[0]
-    return connected_locator
+    connected_locator_ip = locator_ips[connected_locator]
+    return connected_locator, connected_locator_ip
 
 
 def notify_manager(manager, method, client_info):
@@ -63,13 +72,13 @@ def notify_manager(manager, method, client_info):
 def connect_locator(manager, method="geo"):
     locators = get_locators(manager)
     client_info = ipinfo()
-    if client_info['hostname'] == "No Hostname":
+    if "No" in client_info['hostname']:
         client_info['hostanme'] = socket.gethostname()
 
     if method == "geo":
-        connected_locator = geo_connect(client_info, locators)
+        connected_locator, connected_locator_ip = geo_connect(client_info, locators)
     elif method == "net":
-        connected_locator = net_connect(locators)
+        connected_locator, connected_locator_ip = net_connect(locators)
     else:
         print "Unknown method to connect to a locator!"
         return None
@@ -83,7 +92,7 @@ def connect_locator(manager, method="geo"):
     if num_tries == 3:
         print "Try to notify the manager 3 times but all failed."
 
-    return connected_locator
+    return {'name' : connected_locator, 'ip' : connected_locator_ip}
 
 if __name__ == '__main__':
     manager = "manage.cmu-agens.com"

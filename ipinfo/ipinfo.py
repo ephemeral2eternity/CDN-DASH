@@ -24,6 +24,7 @@ def ipinfo(ip=None):
     else:
         url = 'http://ipinfo.io/'
 
+    hop_info = {}
     try:
         resp = requests.get(url)
         hop_info = json.loads(resp.text)

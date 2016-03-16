@@ -25,7 +25,7 @@ if __name__ == '__main__':
 	video_name = 'BBB'
 
 	### Get the server to start streaming
-	manager = "40.122.166.121"
+	manager = "manage.cmu-agens.com"
 	for i in range(1):
 		## Testing rtt based server selection
 		locator = connect_locator(manager)
