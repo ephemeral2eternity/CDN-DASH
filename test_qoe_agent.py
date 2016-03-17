@@ -28,7 +28,9 @@ if __name__ == '__main__':
 	manager = "manage.cmu-agens.com"
 	for i in range(1):
 		## Testing rtt based server selection
-		locator = connect_locator(manager)
+		locator_info = get_my_locator(manager)
+		print "Connected Locator: ", locator_info
+		locator = locator_info['ip']
 		selected_srv_addr = cdn_host + '/videos/'
 		# client_ID, CDN_SQS, uniq_srvs = qoe_agent(selected_srv_addr, video_name, locator)
 		qoe_agent(selected_srv_addr, video_name, locator)

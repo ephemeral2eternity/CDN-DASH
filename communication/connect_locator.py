@@ -20,6 +20,23 @@ def get_locators(manager):
 
     return locators
 
+def get_my_locator(manager, method="net"):
+    url = "http://%s/client/getLocator?method=%s" % (manager, method)
+
+    my_locator = {}
+    try:
+        req = urllib2.Request(url)
+        response = urllib2.urlopen(req)
+        my_locator = json.load(response)
+    except:
+        print "Failed to contact the manager! Please check the status of " + manager + "!"
+
+    if not my_locator:
+        my_locator = connect_locator(manager, method)
+
+    return my_locator
+
+
 def get_geo_dist(coord1, coord2):
     geo_dist_squre = (coord2[0] - coord1[0])**2 + (coord2[1] - coord1[1])**2
     geo_dist = geo_dist_squre ** 0.5
@@ -96,8 +113,6 @@ def connect_locator(manager, method="geo"):
 
 if __name__ == '__main__':
     manager = "manage.cmu-agens.com"
-    geo_connected = connect_locator(manager, "geo")
-    net_connected = connect_locator(manager, "net")
-    print "Geo-connected locator: ", geo_connected
-    print "Net-connected locator: ", net_connected
+    my_locator = get_my_locator(manager)
+    print "Connected locator: ", my_locator
 
