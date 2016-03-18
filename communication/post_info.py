@@ -53,31 +53,31 @@ def updateRoute(locator, client_ip, srv_ip):
 def cache_client_info(locator, client_info, srv_ip):
     client_info['server'] = srv_ip
     client_ip = client_info['ip']
-    isRouteCached = checkRouteCached(locator, client_ip, srv_ip)
+    # isRouteCached = checkRouteCached(locator, client_ip, srv_ip)
 
-    if not isRouteCached:
-        cdnHops = get_hop_by_host(srv_ip)
-        srv_info = get_node_info(srv_ip)
-        if cdnHops[-1]['ip'] != srv_info['ip']:
-            cdnHops.append(srv_info)
-        client_info['route'] = cdnHops
+    # if not isRouteCached:
+    cdnHops = get_hop_by_host(srv_ip)
+    srv_info = get_node_info(srv_ip)
+    if cdnHops[-1]['ip'] != srv_info['ip']:
+        cdnHops.append(srv_info)
+    client_info['route'] = cdnHops
 
-        # route_str = route2str(cdnHops)
-        # print route_str
-        isSuccess = False
-        tries = 0
-        while (tries < 3) and (not isSuccess):
-            isSuccess = report_route(locator, client_info)
-            tries += 1
+    # route_str = route2str(cdnHops)
+    # print route_str
+    isSuccess = False
+    tries = 0
+    while (tries < 3) and (not isSuccess):
+        isSuccess = report_route(locator, client_info)
+        tries += 1
 
-        if isSuccess:
-            print "Successfully report route from client ", client_ip, " to server ", srv_ip, " to the anomaly locator " \
-                    , "agent ", locator
-        else:
-            print "Failed to report route to anomaly locator agent:", locator
-
+    if isSuccess:
+        print "Successfully report route from client ", client_ip, " to server ", srv_ip, " to the anomaly locator " \
+                , "agent ", locator
     else:
-        print "Route from client ", client_ip, " to server ", srv_ip, " is cached in the anomaly locator!"
+        print "Failed to report route to anomaly locator agent:", locator
+
+    # else:
+    #    print "Route from client ", client_ip, " to server ", srv_ip, " is cached in the anomaly locator!"
 
 
 def locate_anomaly(locator, client_ip, srv_ip):
