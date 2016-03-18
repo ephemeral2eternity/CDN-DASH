@@ -25,11 +25,11 @@ def read_hop_info(hopinfo_path, hop_ip):
         node_info = {}
         node_info['ip'] = hop_ip
         node_info['name'] = hop_info['hostname']
-        node_info['city'] = hop_info['city']
-        node_info['region'] = hop_info['region']
-        node_info['country'] = hop_info['country']
-        node_info['AS'] = hop_info['AS']
-        node_info['ISP'] = hop_info['ISP']
+        node_info['city'] = str(hop_info['city'])
+        node_info['region'] = str(hop_info['region'])
+        node_info['country'] = str(hop_info['country'])
+        node_info['AS'] = str(hop_info['AS'])
+        node_info['ISP'] = str(hop_info['ISP'])
         node_info['latitude'] = hop_info['latitude']
         node_info['longitude'] = hop_info['longitude']
     else:
