@@ -50,16 +50,16 @@ def ipinfo(ip=None):
         hop_info['latitude'] = 0.0
         hop_info['longitude'] = 0.0
 
-    if 'city' not in hop_info.keys():
+    if ('city' not in hop_info.keys()) or (not isinstance(hop_info['city'], str)):
         hop_info['city'] = ''
 
-    if 'region' not in hop_info.keys():
+    if ('region' not in hop_info.keys()) or (not isinstance(hop_info['region'], str)):
         hop_info['region'] = ''
 
-    if 'country' not in hop_info.keys():
+    if ('country' not in hop_info.keys()) or (not isinstance(hop_info['city'], str)):
         hop_info['country'] = ''
 
-    if 'hostname' not in hop_info.keys():
+    if ('hostname' not in hop_info.keys()) or (not isinstance(hop_info['city'], str)):
         hop_info['hostname'] = ip
 
     return hop_info
