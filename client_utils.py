@@ -18,7 +18,7 @@ def get_ext_ip():
 	ext_ip = ext_ip_info['ip']
 	node_info = get_node_info(ext_ip)
 	hostname = socket.gethostname()
-	if '.' not in node_info['name']:
+	if node_info['name'] == node_info['ip']:
 		node_info['name'] = hostname
 	return ext_ip, node_info
 
