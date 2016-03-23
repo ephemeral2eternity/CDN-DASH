@@ -18,7 +18,7 @@ from communication.post_info import *
 # @input : srv_addr ---- the server name address
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
-def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
+def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_period=6, qoe_th=1):
 	## Define all parameters used in this client
 	alpha = 0.5
 	retry_num = 10
@@ -36,8 +36,6 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 	## ==================================================================================================
 	client_ip, client_info = get_ext_ip()
 	client = client_info["name"]
-	cur_ts = time.strftime("%m%d%H%M")
-	client_ID = client + "_" + cur_ts
 
 	rsts, srv_ip = ft_mpd_parser(cdn_host, retry_num, video_name)
 	if not rsts:
@@ -93,7 +91,6 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 	http_errors.update(error_codes)
 	if vchunk_sz == 0:
 		## Write out traces after finishing the streaming
-		writeTrace(client_ID + "_cdn", client_tr)
 		writeHTTPError(client_ID, http_errors)
 		return
 
@@ -124,7 +121,6 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 		http_errors.update(error_codes)
 		if vchunk_sz == 0:
 			## Write out traces after finishing the streaming
-			writeTrace(client_ID, client_tr)
 			writeHTTPError(client_ID, http_errors)
 			return
 
@@ -155,8 +151,10 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
 			str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
 
-		client_tr[chunkNext] = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
-									Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time)
+		cur_tr = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
+									Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time, ChunkID=chunkNext)
+
+		traceWriter.writerow(cur_tr)
 
 		if chunk_srv_ip not in uniq_srvs:
 			uniq_srvs.append(chunk_srv_ip)
@@ -184,10 +182,9 @@ def qoe_agent(cdn_host, video_name, locator, update_period=5, qoe_th=1):
 		chunkNext += 1
 
 	## Write out traces after finishing the streaming
-	writeTrace(client_ID, client_tr)
 	if http_errors:
 		writeTrace(client_ID + "_httperr", http_errors)
 
 	for p in procs:
 		p.join(timeout=100)
-	return client_ID, CDN_SQS, uniq_srvs
+	return CDN_SQS, uniq_srvs
