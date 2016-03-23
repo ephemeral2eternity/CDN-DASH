@@ -20,7 +20,7 @@ def get_locators(manager):
 
     return locators
 
-def get_my_locator(manager, method="net"):
+def get_my_locator(manager, method="geo"):
     url = "http://%s/client/getLocator?method=%s" % (manager, method)
 
     my_locator = {}
