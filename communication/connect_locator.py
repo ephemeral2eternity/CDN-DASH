@@ -89,7 +89,9 @@ def notify_manager(manager, method, client_info):
 def connect_locator(manager, method="geo"):
     locators = get_locators(manager)
     client_info = ipinfo()
-    if "No" in client_info['hostname']:
+    if not client_info['hostname']:
+        client_info['hostname'] = socket.gethostname()
+    elif "No" in client_info['hostname']:
         client_info['hostname'] = socket.gethostname()
 
     if method == "geo":
@@ -110,6 +112,7 @@ def connect_locator(manager, method="geo"):
         print "Try to notify the manager 3 times but all failed."
 
     return {'name' : connected_locator, 'ip' : connected_locator_ip}
+
 
 if __name__ == '__main__':
     manager = "manage.cmu-agens.com"

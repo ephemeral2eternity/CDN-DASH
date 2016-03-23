@@ -97,6 +97,7 @@ if __name__ == "__main__":
 
     '''
 
-    node_ip = "62.115.40.254"
-    node_info = ipinfo(node_ip)
+    # node_ip = "62.115.40.254"
+    # node_info = ipinfo(node_ip)
+    node_info = ipinfo()
     print node_info
