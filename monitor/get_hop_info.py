@@ -28,11 +28,17 @@ def read_hop_info(hopinfo_path, hop_ip):
         if not hop_info['city']:
             node_info['city'] = ""
         else:
-            node_info['city'] = str(hop_info['city'])
+            try:
+                node_info['city'] = str(hop_info['city'])
+            except:
+                node_info['city'] = hop_info['city'].encode('utf-8')
         node_info['region'] = str(hop_info['region'])
         node_info['country'] = str(hop_info['country'])
         node_info['AS'] = str(hop_info['AS'])
-        node_info['ISP'] = str(hop_info['ISP'])
+        try:
+            node_info['ISP'] = str(hop_info['ISP'])
+        except:
+            node_info['ISP'] = hop_info['ISP'].encode('utf-8')
         node_info['latitude'] = hop_info['latitude']
         node_info['longitude'] = hop_info['longitude']
     else:
