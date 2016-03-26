@@ -14,6 +14,3 @@ locator = "40.121.147.110"
 _, client_info = get_ext_ip()
 client = client_info["name"]
 cache_client_info(locator, client_info, server_ip)
-
-server_ip = locator
-cache_client_info(locator, client_info, server_ip)
