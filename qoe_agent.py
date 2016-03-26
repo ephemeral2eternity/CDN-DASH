@@ -167,14 +167,14 @@ def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_peri
 		## Update route info periodically
 		if chunk_cascading_QoE > qoe_th:
 			if (chunkNext % update_period == 0) and (chunkNext > update_period - 1):
-				isUpdated = updateRoute(locator, client_ip, srv_ip)
+				isUpdated = updateRoute(locator, client_ip, srv_ip, chunk_cascading_QoE)
 				if isUpdated:
 					print "Updated the status of route successfully!"
 				else:
 					print "Failed to update the status of the existing route!"
 		elif (chunk_cascading_QoE <= qoe_th) and (chunkNext > update_period - 1):
 			print "Please add anomaly localization request here!"
-			loc_p = fork_locate_anomaly(locator, client_ip, srv_ip)
+			loc_p = fork_locate_anomaly(locator, client_ip, srv_ip, chunk_cascading_QoE)
 			procs.append(loc_p)
 
 		preTS = curTS

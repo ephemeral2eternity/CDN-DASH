@@ -71,7 +71,7 @@ def get_hop_by_host(cdn_host):
 
         if not is_reserved(cur_hop_ip):
             node_info = get_node_info(cur_hop_ip)
-            if is_ip(node_info['name']):
+            if (is_ip(node_info['name'])) and ('No Host' not in hops[hop_id]['name']):
                 node_info['name'] = hops[hop_id]['name']
 
             save_ipinfo(hop_data_folder, node_info)

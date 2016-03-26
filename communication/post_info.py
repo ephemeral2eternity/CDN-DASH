@@ -33,8 +33,8 @@ def checkRouteCached(locator, client_ip, srv_ip):
 
     return isRouteCached
 
-def updateRoute(locator, client_ip, srv_ip):
-    url = "http://%s/locator/update?client=%s&server=%s" % (locator, client_ip, srv_ip)
+def updateRoute(locator, client_ip, srv_ip, qoe):
+    url = "http://%s/locator/update?client=%s&server=%s&qoe=%f" % (locator, client_ip, srv_ip, qoe)
 
     isRouteUpdated = True
     try:
@@ -80,8 +80,8 @@ def cache_client_info(locator, client_info, srv_ip):
     #    print "Route from client ", client_ip, " to server ", srv_ip, " is cached in the anomaly locator!"
 
 
-def locate_anomaly(locator, client_ip, srv_ip):
-    url = "http://%s/locator/locate?client=%s&server=%s" % (locator, client_ip, srv_ip)
+def locate_anomaly(locator, client_ip, srv_ip, qoe):
+    url = "http://%s/locator/locate?client=%s&server=%s&qoe=%.3f" % (locator, client_ip, srv_ip, qoe)
 
     anomaly_info = {}
     try:
@@ -91,7 +91,6 @@ def locate_anomaly(locator, client_ip, srv_ip):
         print "Located anomaly info:", anomaly_info
     except:
         print "Failed to locate the anomaly for streaming session from client ", client_ip, " to server ", srv_ip
-
     return anomaly_info
 
 
@@ -100,8 +99,8 @@ def fork_cache_client_info(locator, client_info, srv_ip):
     p.start()
     return p
 
-def fork_locate_anomaly(locator, client_ip, srv_ip):
-    p = Process(target=locate_anomaly, args=(locator, client_ip, srv_ip))
+def fork_locate_anomaly(locator, client_ip, srv_ip, qoe):
+    p = Process(target=locate_anomaly, args=(locator, client_ip, srv_ip, qoe))
     p.start()
     return p
 
@@ -115,8 +114,19 @@ def route2str(full_route):
     return route_str
 
 if __name__ == '__main__':
-    client_ip = "128.237.172.152"
+    client_ip = "128.2.57.73"
     server_ip = "72.21.81.200"
-    locator = "40.76.72.2"
-    anomaly_info = locate_anomaly(locator, client_ip, server_ip)
-    print anomaly_info
+    locator = "40.121.147.110"
+    srv2_ip = locator
+    #client_ip, client_info = get_ext_ip()
+    #client = client_info["name"]
+    #cache_client_info(locator, client_info, srv_ip)
+    qoe = 3.5
+    # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
+    isUpdated = updateRoute(locator, client_ip, server_ip, qoe)
+    print isUpdated
+    #isUpdated = updateRoute(locator, client_ip, srv2_ip, qoe)
+    #print isUpdated
+    qoe = 0.5
+    anomaly_info = locate_anomaly(locator, client_ip, srv2_ip, qoe)
+    # anomaly_info = locate_anomaly(locator, client_ip, srv2_ip, qoe)
