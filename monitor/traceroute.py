@@ -47,7 +47,7 @@ def traceroute(host):
     if sys.platform == 'win32':
         cmd = ['tracert', host]
     else:
-        cmd = ['traceroute', '-I', '-m', '30', host]
+        cmd = ['traceroute', '-m', '30', host]
     p = Popen(cmd, stdout=PIPE)
     while True:
         line = p.stdout.readline()

@@ -117,7 +117,6 @@ if __name__ == '__main__':
     client_ip = "128.2.57.73"
     server_ip = "72.21.81.200"
     locator = "40.121.147.110"
-    srv2_ip = locator
     #client_ip, client_info = get_ext_ip()
     #client = client_info["name"]
     #cache_client_info(locator, client_info, srv_ip)
@@ -128,5 +127,6 @@ if __name__ == '__main__':
     #isUpdated = updateRoute(locator, client_ip, srv2_ip, qoe)
     #print isUpdated
     qoe = 0.5
-    anomaly_info = locate_anomaly(locator, client_ip, srv2_ip, qoe)
+    client_ip = "128.237.191.151"
+    anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
     # anomaly_info = locate_anomaly(locator, client_ip, srv2_ip, qoe)
