@@ -50,7 +50,7 @@ def updateRoute(locator, client_ip, srv_ip, qoe):
     return isRouteUpdated
 
 
-def cache_client_info(locator, client_info, srv_ip):
+def cache_client_info(locator, client_info, srv_ip, cdn_host):
     client_info['server'] = srv_ip
     client_ip = client_info['ip']
     # isRouteCached = checkRouteCached(locator, client_ip, srv_ip)
@@ -60,6 +60,8 @@ def cache_client_info(locator, client_info, srv_ip):
     srv_info = get_node_info(srv_ip)
     if cdnHops[-1]['ip'] != srv_info['ip']:
         cdnHops.append(srv_info)
+    cdnHops[-1]['name'] = cdn_host
+
     client_info['route'] = cdnHops
 
     # route_str = route2str(cdnHops)
@@ -94,8 +96,8 @@ def locate_anomaly(locator, client_ip, srv_ip, qoe):
     return anomaly_info
 
 
-def fork_cache_client_info(locator, client_info, srv_ip):
-    p = Process(target=cache_client_info, args=(locator, client_info, srv_ip))
+def fork_cache_client_info(locator, client_info, srv_ip, cdn_host):
+    p = Process(target=cache_client_info, args=(locator, client_info, srv_ip, cdn_host))
     p.start()
     return p
 
