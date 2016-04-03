@@ -27,11 +27,11 @@ if __name__ == '__main__':
 	if len(sys.argv) > 2:
 		cdn_host = sys.argv[1]
 	else:
-		cdn_host = "az.cmu-agens.com"
+		cdn_host = "cache.cmu-agens.com"
 	if len(sys.argv) > 2:
 		num_runs = int(sys.argv[2])
 	else:
-		num_runs = 2
+		num_runs = 5
 
 	video_name = 'BBB'
 

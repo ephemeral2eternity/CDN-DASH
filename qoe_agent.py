@@ -18,7 +18,7 @@ from communication.post_info import *
 # @input : srv_addr ---- the server name address
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
-def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_period=6, qoe_th=1):
+def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_period=4, qoe_th=1):
 	## Define all parameters used in this client
 	alpha = 0.5
 	retry_num = 10
@@ -42,7 +42,8 @@ def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_peri
 		return
 
 	## Fork a process doing traceroute to srv_ip and report it to the locator.
-	tr_proc = fork_cache_client_info(locator, client_info, srv_ip, cdn_host)
+	cdn_host_name = cdn_host.split('/')[0]
+	tr_proc = fork_cache_client_info(locator, client_info, srv_ip, cdn_host_name)
 	procs.append(tr_proc)
 
 	### ===========================================================================================================
