@@ -14,7 +14,7 @@ def get_locators(manager):
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         data = json.load(response)
-        locators = data['data']
+        locators = data['locator']
     except:
         print "Failed to get the list of locator agents! Please initialize the locator list on the manager!"
 
