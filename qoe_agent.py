@@ -145,17 +145,18 @@ def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_peri
 		chunk_cascading_QoE = computeCasQoE(freezingTime, curBW, maxBW)
 
 		CDN_SQS = (1 - alpha) * CDN_SQS + alpha * chunk_cascading_QoE
-		print CDN_SQS
+		# print CDN_SQS
 
 		# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
 
-		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
-			str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
+		if (chunkNext > update_period):
+			print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
+				str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
 
-		cur_tr = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
-									Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time, ChunkID=chunkNext)
+			cur_tr = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
+										Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time, ChunkID=chunkNext)
 
-		traceWriter.writerow(cur_tr)
+			traceWriter.writerow(cur_tr)
 
 		if chunk_srv_ip not in uniq_srvs:
 			uniq_srvs.append(chunk_srv_ip)
