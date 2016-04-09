@@ -64,6 +64,10 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host):
 
     client_info['route'] = cdnHops
 
+    outJsonFileName = os.getcwd() + "/dataQoE/" + client_info['name'] + "-" + client_info['server'] + ".json"
+    with open(outJsonFileName, 'wb') as f:
+        json.dump(client_info, f)
+
     # route_str = route2str(cdnHops)
     # print route_str
     isSuccess = False
