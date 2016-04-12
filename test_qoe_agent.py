@@ -56,7 +56,11 @@ if __name__ == '__main__':
 	### Get the server to start streaming
 	manager = "manage.cmu-agens.com"
 
+<<<<<<< HEAD
 	#  waitRandom(1, 300)
+=======
+	waitRandom(1, 300)
+>>>>>>> bf3106205bf5b63ab620d723678b6cd07075c2ca
 	for i in range(num_runs):
 		## Testing rtt based server selection
 		locator_info = get_my_locator(manager)
