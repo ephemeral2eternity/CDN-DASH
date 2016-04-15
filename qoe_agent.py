@@ -116,7 +116,7 @@ def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_peri
 		if chunk_srv_ip != srv_ip:
 			srv_ip = chunk_srv_ip
 			## Fork a process doing traceroute to srv_ip and report it to the locator.
-			tr_proc = fork_cache_client_info(locator, client_info, srv_ip)
+			tr_proc = fork_cache_client_info(locator, client_info, srv_ip, cdn_host)
 			procs.append(tr_proc)
 
 		http_errors.update(error_codes)
