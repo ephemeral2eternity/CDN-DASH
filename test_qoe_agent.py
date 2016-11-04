@@ -32,12 +32,18 @@ if __name__ == '__main__':
 		num_runs = int(sys.argv[2])
 	else:
 		num_runs = 5
+	
+	if len(sys.argv) > 3:
+		client_name = sys.argv[3]
+	else:
+		# client_name = "local"
+		client_name = getMyName()
+
 
 	video_name = 'BBB'
 
 	## Create Trace CSV file
-	client_name = getMyName()
-	cur_ts = time.strftime("%m%d%H%M")
+	cur_ts = time.strftime("%m%d%H%M%S")
 	client_ID = client_name + "_" + cur_ts
 
 	trace_fields = ["TS", "Buffer", "Freezing", "QoE1", "QoE2", "Representation", "Response", "Server", "ChunkID"]
