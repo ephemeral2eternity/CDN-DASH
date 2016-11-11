@@ -5,7 +5,6 @@
 import json
 import os
 from monitor.traceroute import *
-from ipinfo.host2ip import *
 from ipinfo.ipinfo import *
 
 def read_hop_info(hopinfo_path, hop_ip):
@@ -34,7 +33,7 @@ def read_hop_info(hopinfo_path, hop_ip):
                 node_info['city'] = hop_info['city'].encode('utf-8')
         node_info['region'] = str(hop_info['region'])
         node_info['country'] = str(hop_info['country'])
-        node_info['AS'] = str(hop_info['AS'])
+        node_info['AS'] = hop_info['AS']
         try:
             node_info['ISP'] = str(hop_info['ISP'])
         except:
@@ -48,15 +47,31 @@ def read_hop_info(hopinfo_path, hop_ip):
 
 
 def get_node_info(ip):
-    hop_data_folder = os.getcwd() + '/hopData/'
+    filePath = os.path.split(os.path.realpath(__file__))[0]
+    parentPath = os.path.split(filePath)[0]
+    hop_data_folder = parentPath + '/hopData/'
     node_info = read_hop_info(hop_data_folder, ip)
     # print hop_info
     save_ipinfo(hop_data_folder, node_info)
     return node_info
 
+# ================================================================================
+## Get Client Agent Name
+# ================================================================================
+def get_ext_ip():
+	ext_ip_info = ipinfo()
+	ext_ip = ext_ip_info['ip']
+	node_info = get_node_info(ext_ip)
+	hostname = socket.gethostname()
+	if node_info['name'] == node_info['ip']:
+		node_info['name'] = hostname
+	return ext_ip, node_info
+
 
 def get_hop_by_host(cdn_host):
-    hop_data_folder = os.getcwd() + '/hopData/'
+    filePath = os.path.split(os.path.realpath(__file__))[0]
+    parentPath = os.path.split(filePath)[0]
+    hop_data_folder = parentPath + '/hopData/'
 
     hops = traceroute(cdn_host)
     # print hops

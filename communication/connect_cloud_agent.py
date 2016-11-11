@@ -6,7 +6,7 @@ from ipinfo.ipinfo import *
 from monitor.ping import *
 
 # Get the list of all locators
-def get_locators(manager):
+def get_cloud_agents(manager):
     url = "http://%s/getJsonData/" % manager
 
     locators = []
@@ -14,27 +14,27 @@ def get_locators(manager):
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         data = json.load(response)
-        locators = data['locator']
+        cloud_agents = data['locator']
     except:
-        print "Failed to get the list of locator agents! Please initialize the locator list on the manager!"
+        print "Failed to get the list of cloud agents! Please initialize the cloud agent list on the manager!"
 
-    return locators
+    return cloud_agents
 
-def get_my_locator(manager, method="geo"):
+def get_my_cloud_agent(manager, method="geo"):
     url = "http://%s/client/getLocator?method=%s" % (manager, method)
 
-    my_locator = {}
+    my_cloud_agent = {}
     try:
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
-        my_locator = json.load(response)
+        my_cloud_agent = json.load(response)
     except:
         print "Failed to contact the manager! Please check the status of " + manager + "!"
 
-    if not my_locator:
-        my_locator = connect_locator(manager, method)
+    if not my_cloud_agent:
+        my_cloud_agent = connect_cloud_agent(manager, method)
 
-    return my_locator
+    return my_cloud_agent
 
 
 def get_geo_dist(coord1, coord2):
@@ -43,34 +43,34 @@ def get_geo_dist(coord1, coord2):
     return geo_dist
 
 
-def geo_connect(client_info, locators):
+def geo_connect(client_info, cloud_agents):
     client_coords = [float(client_info['latitude']), float(client_info['longitude'])]
     geo_dist_dict = {}
-    locator_ips = {}
-    for node in locators:
+    cloud_agent_ips = {}
+    for node in cloud_agents:
         node_name = node['name']
         node_ip = node['ip']
-        locator_ips[node_name] = node_ip
+        cloud_agent_ips[node_name] = node_ip
         node_geo_dist = get_geo_dist(client_coords, [float(node['lat']), float(node['lon'])])
         geo_dist_dict[node_name] = node_geo_dist
 
-    connected_locator = min(geo_dist_dict.items(), key=lambda x:x[1])[0]
-    connected_locator_ip = locator_ips[connected_locator]
-    return connected_locator, connected_locator_ip
+    connected_cloud_agent = min(geo_dist_dict.items(), key=lambda x:x[1])[0]
+    connected_cloud_agent_ip = cloud_agent_ips[connected_cloud_agent]
+    return connected_cloud_agent, connected_cloud_agent_ip
 
-def net_connect(locators):
+def net_connect(cloud_agents):
     net_dist_dict = {}
-    locator_ips = {}
-    for node in locators:
+    cloud_agent_ips = {}
+    for node in cloud_agents:
         node_name = node['name']
         node_ip = node['ip']
-        locator_ips[node_name] = node_ip
+        cloud_agent_ips[node_name] = node_ip
         rtt = getMnRTT(node_ip)
         net_dist_dict[node_name] = rtt
 
-    connected_locator = min(net_dist_dict.items(), key=lambda x:x[1])[0]
-    connected_locator_ip = locator_ips[connected_locator]
-    return connected_locator, connected_locator_ip
+    connected_cloud_agent = min(net_dist_dict.items(), key=lambda x:x[1])[0]
+    connected_cloud_agent_ip = cloud_agent_ips[connected_cloud_agent]
+    return connected_cloud_agent, connected_cloud_agent_ip
 
 
 def notify_manager(manager, method, client_info):
@@ -86,8 +86,8 @@ def notify_manager(manager, method, client_info):
     return isSuccess
 
 
-def connect_locator(manager, method="geo"):
-    locators = get_locators(manager)
+def connect_cloud_agent(manager, method="geo"):
+    cloud_agents = get_cloud_agents(manager)
     client_info = ipinfo()
     if not client_info['hostname']:
         client_info['hostname'] = socket.gethostname()
@@ -95,14 +95,14 @@ def connect_locator(manager, method="geo"):
         client_info['hostname'] = socket.gethostname()
 
     if method == "geo":
-        connected_locator, connected_locator_ip = geo_connect(client_info, locators)
+        connected_cloud_agent, connected_cloud_agent_ip = geo_connect(client_info, cloud_agents)
     elif method == "net":
-        connected_locator, connected_locator_ip = net_connect(locators)
+        connected_cloud_agent, connected_cloud_agent_ip = net_connect(cloud_agents)
     else:
-        print "Unknown method to connect to a locator!"
+        print "Unknown method to connect to a cloud agent!"
         return None
     ## Post the info the the centralized manager
-    client_info['locator'] = connected_locator
+    client_info['locator'] = connected_cloud_agent
 
     num_tries = 0
     while (not notify_manager(manager, method, client_info)) and (num_tries < 3):
@@ -111,11 +111,11 @@ def connect_locator(manager, method="geo"):
     if num_tries == 3:
         print "Try to notify the manager 3 times but all failed."
 
-    return {'name' : connected_locator, 'ip' : connected_locator_ip}
+    return {'name' : connected_cloud_agent, 'ip' : connected_cloud_agent_ip}
 
 
 if __name__ == '__main__':
     manager = "manage.cmu-agens.com"
-    my_locator = get_my_locator(manager)
-    print "Connected locator: ", my_locator
+    my_cloud_agent = get_my_cloud_agent(manager, 'net')
+    print "Connected cloud agent: ", my_cloud_agent
 

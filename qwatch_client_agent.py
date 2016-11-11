@@ -1,24 +1,16 @@
-import urllib2
-import socket
-import time
-import datetime
-import json
-import shutil
-import os
-import logging
-import subprocess
+from communication.post_info import *
+from dash.fault_tolerance import *
 from dash.utils import *
 from qoe.dash_chunk_qoe import *
-from dash.fault_tolerance import *
-from client_utils import *
-from communication.post_info import *
+from utils.client_utils import *
+
 
 ## ==================================================================================================
 # define the simple client agent that only downloads videos from denoted server
 # @input : srv_addr ---- the server name address
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
-def qoe_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_period=4, qoe_th=1):
+def qwatch_client_agent(cdn_host, video_name, locator, client_ID, traceWriter, update_period=4, qoe_th=1):
 	## Define all parameters used in this client
 	alpha = 0.5
 	retry_num = 10

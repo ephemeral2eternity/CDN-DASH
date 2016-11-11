@@ -1,15 +1,8 @@
-import urllib2
-import socket
-import time
-import datetime
-import json
-import shutil
-import os
-import logging
+from dash.fault_tolerance import *
 from dash.utils import *
 from qoe.dash_chunk_qoe import *
-from dash.fault_tolerance import *
-from client_utils import *
+from utils.client_utils import *
+
 
 ## ==================================================================================================
 # define the simple client agent that only downloads videos from denoted server

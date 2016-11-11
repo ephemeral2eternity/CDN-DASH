@@ -36,10 +36,10 @@ def ipinfo(ip=None):
     if 'org' in hop_info.keys():
         hop_org = hop_info['org']
         hop_org_items = hop_org.split()
-        hop_info['AS'] = hop_org_items[0]
+        hop_info['AS'] = int(hop_org_items[0][2:])
         hop_info['ISP'] = " ".join(hop_org_items[1:])
     else:
-        hop_info['AS'] = "unknown"
+        hop_info['AS'] = -1
         hop_info['ISP'] = "unknown"
 
     if 'loc' in hop_info.keys():

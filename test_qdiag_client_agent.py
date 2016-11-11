@@ -2,20 +2,12 @@
 # trace_cdn.py
 # Chen Wang, Mar. 3, 2016
 # chenw@cmu.edu
-import random
-import sys
-import os
-import logging
-import shutil
-import time
 import csv
-from datetime import datetime
-from qoe_agent import *
-from monitor.ping import *
-from test_utils import *
+from qdiag_client_agent import *
 from multiprocessing import freeze_support
 from monitor.get_hop_info import *
-from communication.connect_locator import *
+from communication.connect_cloud_agent import *
+
 
 ## Denote the server info
 # cdn_host = 'cmu-agens.azureedge.net'
@@ -27,11 +19,11 @@ if __name__ == '__main__':
 	if len(sys.argv) > 2:
 		cdn_host = sys.argv[1]
 	else:
-		cdn_host = "cache.cmu-agens.com"
+		cdn_host = "az.cmu-agens.com"
 	if len(sys.argv) > 2:
 		num_runs = int(sys.argv[2])
 	else:
-		num_runs = 5
+		num_runs = 1
 	
 	if len(sys.argv) > 3:
 		client_name = sys.argv[3]
@@ -62,15 +54,15 @@ if __name__ == '__main__':
 	### Get the server to start streaming
 	manager = "manage.cmu-agens.com"
 
-	waitRandom(1, 300)
+	# waitRandom(1, 300)
 	for i in range(num_runs):
 		## Testing rtt based server selection
-		locator_info = get_my_locator(manager)
-		print "Connected Locator: ", locator_info
-		locator = locator_info['ip']
+		diag_agent_info = get_my_cloud_agent(manager)
+		print "Connected cloud agent: ", diag_agent_info
+		diag_agent = diag_agent_info['ip']
 		selected_srv_addr = cdn_host + '/videos/'
 		# client_ID, CDN_SQS, uniq_srvs = qoe_agent(selected_srv_addr, video_name, locator)
-		qoe_agent(selected_srv_addr, video_name, locator, client_ID, out_csv_writer)
+		qdiag_client_agent(selected_srv_addr, video_name, diag_agent, client_ID, out_csv_writer)
 
 		if os.path.exists(os.getcwd() + "/tmp/"):
 			shutil.rmtree(os.getcwd() + "/tmp/")
