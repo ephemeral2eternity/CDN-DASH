@@ -4,6 +4,7 @@
 # chenw@cmu.edu
 from monitor.get_hop_info import *
 from communication.comm_manager import *
+from utils.test_utils import *
 
 ## Denote the server info
 # cdn_host = 'cmu-agens.azureedge.net'
@@ -21,6 +22,7 @@ cdnHops = get_hop_by_host(cdn_host)
 cdnHops.append(srv_info)
 client_info['route'] = cdnHops
 
+waitRandom(1, 300)
 manager = 'manage.cmu-agens.com'
 success = report_route(manager, client_info)
 print success
