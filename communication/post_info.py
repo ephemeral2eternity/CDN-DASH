@@ -14,7 +14,7 @@ from monitor.get_hop_info import *
 def report_route(locator, client_info, isDiag=True):
     ## Debug URL
     if isDiag:
-        url = "http://%s/diag/add" % locator
+        url = "http://%s:8000/diag/add" % locator
     else:
         url = "http://%s/locator/add" % locator
     # url = "http://%s/diag/add" % locator
@@ -63,7 +63,7 @@ def updateRoute(locator, client_ip, srv_ip, qoe):
 
 
 def updateAttribute(diagAgent, client_ip, srv_ip, qoe):
-    url = "http://%s/diag/update?client=%s&server=%s&qoe=%f" % (diagAgent, client_ip, srv_ip, qoe)
+    url = "http://%s:8000/diag/update?client=%s&server=%s&qoe=%f" % (diagAgent, client_ip, srv_ip, qoe)
 
     isUpdated = True
     try:
@@ -95,7 +95,8 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
     client_info['route'] = cdnHops
 
     # outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
-    outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
+    # outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
+    outJsonFileName = os.path.pardir + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
     with open(outJsonFileName, 'wb') as f:
         json.dump(client_info, f)
 
@@ -118,7 +119,7 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
 
 
 def add_event(diagAgent, client, eventType, prevVal, curVal):
-    url = "http://%s/diag/addEvent?client=%s&typ=%s&prev=%s&cur=%s" % (diagAgent, client, eventType, prevVal, curVal)
+    url = "http://%s:8000/diag/addEvent?client=%s&typ=%s&prev=%s&cur=%s" % (diagAgent, client, eventType, prevVal, curVal)
 
     try:
         response = urllib2.urlopen(url)
@@ -148,7 +149,7 @@ def locate_anomaly(locator, client_ip, srv_ip, qoe):
 
 def diagnose_anomaly(diagAgent, client_ip, srv_ip, qoe, anomalyType):
     # url = "http://%s/locator/locate?client=%s&server=%s&qoe=%.3f" % (locator, client_ip, srv_ip, qoe)
-    url = "http://%s/diag/diag?client=%s&server=%s&qoe=%.3f&type=%s" % (diagAgent, client_ip, srv_ip, qoe, anomalyType)
+    url = "http://%s:8000/diag/diag?client=%s&server=%s&qoe=%.3f&type=%s" % (diagAgent, client_ip, srv_ip, qoe, anomalyType)
 
     anomaly_info = {}
     try:
@@ -169,8 +170,7 @@ def route2str(full_route):
     return route_str
 
 if __name__ == '__main__':
-    client_ip = "71.206.236.67"
-    server_ip = "72.21.81.200"
+    server_ip = "93.184.221.200"
     cdn_host = "az.cmu-agens.com"
     diagAgent = "superman.andrew.cmu.edu"
     client_ip, client_info = get_ext_ip()
@@ -184,14 +184,14 @@ if __name__ == '__main__':
 
     eventType = "server_switch"
     preVal = server_ip
-    server_ip = "93.184.221.200"
+    server_ip = "72.21.81.200"
     curVal = server_ip
 
     cache_client_info(diagAgent, client_info, server_ip, cdn_host)
     isAdded = add_event(diagAgent, client_ip, eventType, preVal, curVal)
     print isAdded
 
-    anomalyType = "persistent"
+    anomalyType = "occasional"
     qoe = 1.2
     diagResult = diagnose_anomaly(diagAgent, client_ip, server_ip, qoe, anomalyType)
 
