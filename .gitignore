@@ -60,6 +60,7 @@ target/
 # *.json
 
 # Experimental Results
+routeData/
 dataQoE/
 tmp/
 hopData/
