@@ -61,6 +61,8 @@ def ipinfo(ip=None):
 
     if ('hostname' not in hop_info.keys()):
         hop_info['hostname'] = ip
+    elif ('No' in hop_info['hostname']):
+        hop_info['hostname'] = ip
 
     return hop_info
 
