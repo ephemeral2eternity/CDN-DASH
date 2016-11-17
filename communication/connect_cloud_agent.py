@@ -7,14 +7,14 @@ from monitor.ping import *
 
 # Get the list of all locators
 def get_cloud_agents(manager):
-    url = "http://%s/getJsonData/" % manager
+    url = "http://%s/get_cloud_agents/" % manager
 
-    locators = []
+    cloud_agents = []
     try:
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         data = json.load(response)
-        cloud_agents = data['locator']
+        cloud_agents = data
     except:
         print "Failed to get the list of cloud agents! Please initialize the cloud agent list on the manager!"
 

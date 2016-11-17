@@ -14,7 +14,7 @@ from monitor.get_hop_info import *
 def report_route(locator, client_info, isDiag=True):
     ## Debug URL
     if isDiag:
-        url = "http://%s:8000/diag/add" % locator
+        url = "http://%s/diag/add" % locator
     else:
         url = "http://%s/locator/add" % locator
     # url = "http://%s/diag/add" % locator

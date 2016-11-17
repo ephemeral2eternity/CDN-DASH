@@ -3,6 +3,7 @@ from dash.fault_tolerance import *
 from dash.utils import *
 from qoe.dash_chunk_qoe import *
 from utils.client_utils import *
+from communication.thread_wrapper import *
 
 
 ## ==================================================================================================
@@ -35,7 +36,7 @@ def qwatch_client_agent(cdn_host, video_name, locator, client_ID, traceWriter, u
 
 	## Fork a process doing traceroute to srv_ip and report it to the locator.
 	cdn_host_name = cdn_host.split('/')[0]
-	tr_proc = fork_cache_client_info(locator, client_info, srv_ip, cdn_host_name)
+	tr_proc = fork_cache_client_info(locator, client_info, srv_ip, cdn_host_name, False)
 	procs.append(tr_proc)
 
 	### ===========================================================================================================

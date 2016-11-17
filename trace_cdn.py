@@ -4,6 +4,7 @@
 # chenw@cmu.edu
 from monitor.get_hop_info import *
 from communication.comm_manager import *
+from communication.connect_cloud_agent import *
 from utils.test_utils import *
 
 ## Denote the server info
@@ -24,7 +25,9 @@ client_info['route'] = cdnHops
 
 waitRandom(1, 300)
 manager = 'manage.cmu-agens.com'
-success = report_route(manager, client_info)
+# manager = 'superman.andrew.cmu.edu:8000'
+cloudAgent = connect_cloud_agent(manager, method="geo")
+success = report_route_to_manager(manager, client_info)
 print success
 
 
