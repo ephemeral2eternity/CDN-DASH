@@ -4,6 +4,8 @@
 # chenw@cmu.edu
 from monitor.get_hop_info import *
 from communication.comm_manager import *
+from communication.connect_cloud_agent import *
+import random
 from utils.test_utils import *
 
 ## Denote the server info
@@ -11,22 +13,65 @@ from utils.test_utils import *
 # cdn_host = 'aws.cmu-agens.com'
 cdn_host = 'az.cmu-agens.com'
 video_name = 'BBB'
+# manager = 'superman.andrew.cmu.edu:8000'
+manager = 'manage.cmu-agens.com'
 
-### Get client name and attache to the closest cache agent
+## Connect cloud agent and notify the manager
+cloud_agent = connect_cloud_agent(manager)
+
+## Traceroute to the CDN to get the video session
 ext_ip, client_info = get_ext_ip()
 srv_ip = host2ip(cdn_host)
-client_info['server'] = srv_ip
-srv_info = get_node_info(srv_ip)
+srv_info = get_node_info(srv_ip, "server")
 ## Traceroute all srvs
 cdnHops = get_hop_by_host(cdn_host)
-cdnHops.append(srv_info)
+client_info['server'] = srv_info
 client_info['route'] = cdnHops
 
-waitRandom(1, 300)
-manager = 'manage.cmu-agens.com'
-success = report_route(manager, client_info)
-print success
+waitRandom(1, 100)
+success = report_nodes(manager, client_info)
+if success:
+    print "Successfully report nodes on sesssion of (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
+else:
+    print "Failed to run http://manager/nodeinfo/add!"
 
+success = report_video_session(manager, client_info)
+if success:
+    print "Successfully report video session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
+else:
+    print "Failed to run http://manager/verify/add_video_session!"
+
+#### Obtain verification agents
+K = 10
+all_nodes = get_all_nodes(manager)
+if 'client' in all_nodes.keys():
+    available_agents = [agent['ip'] for agent in all_nodes['client']]
+    available_agents.remove(client_info['ip'])
+    random.shuffle(available_agents)
+    chosen_agents = available_agents[:K]
+    print chosen_agents
+
+    for agent_ip in chosen_agents:
+        agent_cdn_hops = get_hop_by_host(agent_ip)
+        srv_info = get_node_info(agent_ip, "server")
+        client_info['server'] = srv_info
+        client_info['route'] = agent_cdn_hops
+
+        waitRandom(1, 100)
+
+        success = report_nodes(manager, client_info)
+        if success:
+            print "Successfully report nodes on session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
+        else:
+            print "Failed to run http://manager/nodeinfo/add!"
+
+        success = report_verify_session(manager, client_info)
+        if success:
+            print "Successfully report verification session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
+        else:
+            print "Failed to run http://manager/verify/add_verify_session!"
+else:
+    print "Failed to obtain the list of clients"
 
 '''
 for client_key in client_info.keys():

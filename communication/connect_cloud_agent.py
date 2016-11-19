@@ -9,12 +9,12 @@ from monitor.ping import *
 def get_cloud_agents(manager):
     url = "http://%s/getJsonData/" % manager
 
-    locators = []
+    cloud_agents = []
     try:
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
         data = json.load(response)
-        cloud_agents = data['locator']
+        cloud_agents = data['agent']
     except:
         print "Failed to get the list of cloud agents! Please initialize the cloud agent list on the manager!"
 

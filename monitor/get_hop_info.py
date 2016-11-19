@@ -7,6 +7,7 @@ import os
 from monitor.traceroute import *
 from ipinfo.ipinfo import *
 
+
 def read_hop_info(hopinfo_path, hop_ip):
     default_hop_path = hopinfo_path + hop_ip + ".json"
     if os.path.exists(default_hop_path):
@@ -46,7 +47,7 @@ def read_hop_info(hopinfo_path, hop_ip):
     return node_info
 
 
-def get_node_info(ip):
+def get_node_info_local(ip):
     filePath = os.path.split(os.path.realpath(__file__))[0]
     parentPath = os.path.split(filePath)[0]
     hop_data_folder = parentPath + '/hopData/'
@@ -55,23 +56,41 @@ def get_node_info(ip):
     save_ipinfo(hop_data_folder, node_info)
     return node_info
 
+def get_node_info(ip=None, nodeTyp='router'):
+    manager = "manage.cmu-agens.com"
+    node_info = get_node_info_from_manager(manager, ip, nodeTyp)
+    return node_info
+
+
 # ================================================================================
 ## Get Client Agent Name
 # ================================================================================
 def get_ext_ip():
-	ext_ip_info = ipinfo()
-	ext_ip = ext_ip_info['ip']
-	node_info = get_node_info(ext_ip)
-	hostname = socket.gethostname()
-	if node_info['name'] == node_info['ip']:
-		node_info['name'] = hostname
-	return ext_ip, node_info
+    ext_ip_info = ipinfo()
+    ext_ip = ext_ip_info['ip']
+    node_info = get_node_info(ext_ip)
+    hostname = socket.gethostname()
+    if node_info['name'] == node_info['ip']:
+        node_info['name'] = hostname
+    return ext_ip, node_info
+
+# ================================================================================
+## Get Client Agent Name
+# ================================================================================
+def get_ext_ip():
+    ext_ip_info = ipinfo()
+    ext_ip = ext_ip_info['ip']
+    node_info = get_node_info(ext_ip, "client")
+    hostname = socket.gethostname()
+    if node_info['name'] == node_info['ip']:
+        node_info['name'] = hostname
+    return ext_ip, node_info
 
 
 def get_hop_by_host(cdn_host):
-    filePath = os.path.split(os.path.realpath(__file__))[0]
-    parentPath = os.path.split(filePath)[0]
-    hop_data_folder = parentPath + '/hopData/'
+    # filePath = os.path.split(os.path.realpath(__file__))[0]
+    # parentPath = os.path.split(filePath)[0]
+    # hop_data_folder = parentPath + '/hopData/'
 
     hops = traceroute(cdn_host)
     # print hops
@@ -89,7 +108,7 @@ def get_hop_by_host(cdn_host):
             if (is_ip(node_info['name'])) and ('No Host' not in hops[hop_id]['name']):
                 node_info['name'] = hops[hop_id]['name']
 
-            save_ipinfo(hop_data_folder, node_info)
+            # save_ipinfo(hop_data_folder, node_info)
             full_hops.append(node_info)
 
     return full_hops

@@ -3,6 +3,7 @@ import requests
 import os
 import socket
 import struct
+import urllib2
 from host2ip import *
 
 def is_reserved(ip):
@@ -62,6 +63,8 @@ def ipinfo(ip=None):
     if ('hostname' not in hop_info.keys()) or (not isinstance(hop_info['hostname'], str)) or ("No Host" in hop_info['hostname']):
         hop_info['hostname'] = ip
 
+    hop_info['name'] = hop_info['hostname']
+
     return hop_info
 
 def save_ipinfo(outPath, hop_info):
@@ -75,6 +78,57 @@ def save_ipinfo(outPath, hop_info):
     if not os.path.exists(out_file):
         with open(out_file, 'w') as outfile:
             json.dump(hop_info, outfile, sort_keys = True, indent = 4, ensure_ascii=True)
+
+##########################################################################
+## Obtain node info from our centralized manager's database
+## manager: manager ip address
+## ip: the ip of the node to be retrieved
+## @return: the node info json dict
+#########################################################################
+def get_node_info_from_manager(manager, ip=None, nodeType="router"):
+    if ip:
+        url = 'http://%s/nodeinfo/get_node?ip=%s' % (manager, ip)
+    else:
+        url = 'http://%s/nodeinfo/get_node' % manager
+
+    try:
+        resp = requests.get(url)
+        node_info = json.loads(resp.text)
+        if node_info:
+            obtained = True
+        else:
+            obtained = False
+    except:
+        obtained = False
+
+    if not obtained:
+        if ip:
+            node_info = ipinfo(ip)
+        else:
+            node_info = ipinfo()
+        node_info['type'] = nodeType
+
+        post_node_info_to_manager(manager, node_info)
+
+    return node_info
+
+##########################################################################
+## Post node info to the centralized manager
+## manager: manager ip address
+## ip: the ip of the node to be retrieved
+## @return: the node info json dict
+#########################################################################
+def post_node_info_to_manager(manager, node_info):
+    url = 'http://%s/nodeinfo/add_node' % manager
+    isSuccess = True
+    try:
+        req = urllib2.Request(url)
+        req.add_header('Content-Type', 'application/json')
+        response = urllib2.urlopen(req, json.dumps(node_info))
+    except:
+        isSuccess = False
+
+    return isSuccess
 
 
 if __name__ == "__main__":
