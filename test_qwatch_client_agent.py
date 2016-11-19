@@ -58,7 +58,11 @@ if __name__ == '__main__':
 	waitRandom(1, 300)
 	for i in range(num_runs):
 		## Testing rtt based server selection
+<<<<<<< HEAD
 		locator_info = connect_cloud_agent(manager)
+=======
+		locator_info = get_my_cloud_agent(manager)
+>>>>>>> 688e651d91449f39f524472e0220ff60247f7b32
 		print "Connected Locator: ", locator_info
 		locator = locator_info['ip']
 		selected_srv_addr = cdn_host + '/videos/'

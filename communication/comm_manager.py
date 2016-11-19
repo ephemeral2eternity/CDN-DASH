@@ -7,7 +7,11 @@ import json
 # Centralized manager: manage.cmu-agens.com
 # Client info: client_info
 #############################################################################
+<<<<<<< HEAD
 def report_nodes(manager, client_info):
+=======
+def report_route_to_manager(manager, client_info):
+>>>>>>> 688e651d91449f39f524472e0220ff60247f7b32
     ## Debug URL
     url = "http://%s/nodeinfo/add" % manager
     isSuccess = True

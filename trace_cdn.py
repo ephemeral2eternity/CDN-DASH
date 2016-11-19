@@ -5,7 +5,10 @@
 from monitor.get_hop_info import *
 from communication.comm_manager import *
 from communication.connect_cloud_agent import *
+<<<<<<< HEAD
 import random
+=======
+>>>>>>> 688e651d91449f39f524472e0220ff60247f7b32
 from utils.test_utils import *
 
 ## Denote the server info
@@ -28,6 +31,7 @@ cdnHops = get_hop_by_host(cdn_host)
 client_info['server'] = srv_info
 client_info['route'] = cdnHops
 
+<<<<<<< HEAD
 waitRandom(1, 100)
 success = report_nodes(manager, client_info)
 if success:
@@ -64,6 +68,14 @@ if 'client' in all_nodes.keys():
             print "Successfully report nodes on session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
         else:
             print "Failed to run http://manager/nodeinfo/add!"
+=======
+waitRandom(1, 300)
+manager = 'manage.cmu-agens.com'
+# manager = 'superman.andrew.cmu.edu:8000'
+cloudAgent = connect_cloud_agent(manager, method="geo")
+success = report_route_to_manager(manager, client_info)
+print success
+>>>>>>> 688e651d91449f39f524472e0220ff60247f7b32
 
         success = report_verify_session(manager, client_info)
         if success:
