@@ -4,6 +4,7 @@ PING a server with count times and get the RTT list
 from subprocess import Popen, PIPE
 import re
 import sys
+import time
 
 def extract_number(s):
     regex=r'[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?'
@@ -69,5 +70,7 @@ def pingVMs(vmList):
     return srvRTTs
 
 if __name__ == "__main__":
-    mnRTT = getMnRTT('cmu-agens.azureedge.net')
-    print mnRTT
+    time_start = time.time()
+    mnRTT = getMnRTT('az.cmu-agens.com')
+    duration = time.time() -  time_start
+    print mnRTT, duration

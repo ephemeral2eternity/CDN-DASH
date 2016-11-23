@@ -1,5 +1,6 @@
 from multiprocessing import Process, freeze_support
 from communication.post_info import *
+from comm_monitor import *
 
 def fork_cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
     p = Process(target=cache_client_info, args=(locator, client_info, srv_ip, cdn_host, isDiag))
@@ -23,5 +24,10 @@ def fork_add_event(diag_agent, client, eventType, prevVal, curVal):
 
 def fork_diagnose_anomaly(diagAgent, client_ip, srv_ip, qoe, anomalyType):
     p = Process(target=diagnose_anomaly, args=(diagAgent, client_ip, srv_ip, qoe, anomalyType))
+    p.start()
+    return p
+
+def fork_add_rtt(monitor, src, dst):
+    p = Process(target=addRTT, args=(monitor, src, dst))
     p.start()
     return p

@@ -73,3 +73,17 @@ def get_all_nodes(manager):
         return allNodes
     except:
         return {}
+
+############################################################################
+# Get the verify agents that cover the networks from current source
+# manager: manage.cmu-agens.com
+# @return: the list of destination verify agents
+############################################################################
+def get_verify_agents(manager):
+    url = "http://%s/verify/get_verify_session_by_src" % manager
+    try:
+        rsp = urllib2.urlopen(url)
+        verify_agents_info = json.load(rsp)
+        return verify_agents_info
+    except:
+        return {}
