@@ -31,3 +31,8 @@ def fork_add_rtt(monitor, src, dst):
     p = Process(target=addRTT, args=(monitor, src, dst))
     p.start()
     return p
+
+def fork_add_qoe(monitor, src, dst, chunkID, qoe):
+    p = Process(target=addQoE, args=(monitor, src, dst, chunkID, qoe))
+    p.start()
+    return p

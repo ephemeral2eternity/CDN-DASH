@@ -2,7 +2,7 @@
 # test_cdn_client.py
 # Chen Wang, Oct. 23, 2015
 # chenw@cmu.edu
-from client_utils import *
+from utils.client_utils import *
 
 from dash_client import *
 from utils.test_utils import *

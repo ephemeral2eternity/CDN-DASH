@@ -9,3 +9,11 @@ def addRTT(monitor, src, dst):
         print "Probing %s successfully" % dst
     except:
         print "Failed to probe %s" % dst
+
+def addQoE(monitor, src, dst, chunkID, qoe):
+    url = "http://%s/qoe/add?src=%s&dst=%s&id=%d&qoe=%.4f" % (monitor, src, dst, chunkID, qoe)
+    try:
+        rsp = urllib2.urlopen(url)
+        print "Add QoE successfully"
+    except:
+        print "Failed to report QoE"
