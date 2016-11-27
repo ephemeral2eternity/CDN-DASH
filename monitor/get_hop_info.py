@@ -7,7 +7,6 @@ import os
 from monitor.traceroute import *
 from ipinfo.ipinfo import *
 
-
 def read_hop_info(hopinfo_path, hop_ip):
     default_hop_path = hopinfo_path + hop_ip + ".json"
     if os.path.exists(default_hop_path):
@@ -61,19 +60,6 @@ def get_node_info(ip=None, nodeTyp='router'):
     node_info = get_node_info_from_manager(manager, ip, nodeTyp)
     return node_info
 
-
-# ================================================================================
-## Get Client Agent Name
-# ================================================================================
-def get_ext_ip():
-    ext_ip_info = ipinfo()
-    ext_ip = ext_ip_info['ip']
-    node_info = get_node_info(ext_ip)
-    hostname = socket.gethostname()
-    if node_info['name'] == node_info['ip']:
-        node_info['name'] = hostname
-    return ext_ip, node_info
-
 # ================================================================================
 ## Get Client Agent Name
 # ================================================================================
@@ -86,7 +72,9 @@ def get_ext_ip():
         node_info['name'] = hostname
     return ext_ip, node_info
 
-
+# ================================================================================
+# Get the traceroute info from current client to a CDN host
+# ================================================================================
 def get_hop_by_host(cdn_host):
     # filePath = os.path.split(os.path.realpath(__file__))[0]
     # parentPath = os.path.split(filePath)[0]

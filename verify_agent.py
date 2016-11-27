@@ -8,13 +8,13 @@ if __name__ == '__main__':
     if sys.platform == 'win32':
         freeze_support()
 
-    duration_to_probe = 600
-    step = 5
+    duration_to_probe = 3600
+    step = 10
     manager = "manage.cmu-agens.com"
     cdn = "az.cmu-agens.com"
     my_ip, _ = get_ext_ip()
-    # monitor = "monitor.cmu-agens.com"
-    monitor = "superman.andrew.cmu.edu:8000"
+    monitor = "monitor.cmu-agens.com"
+    # monitor = "superman.andrew.cmu.edu:8000"
 
     verify_agents = get_verify_agents(manager)
     ips_to_probe = [cdn]

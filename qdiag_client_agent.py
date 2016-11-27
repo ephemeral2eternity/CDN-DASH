@@ -5,11 +5,7 @@ from qoe.dash_chunk_qoe import *
 from utils.client_utils import *
 from anomaly.detect_anomaly import *
 from communication.comm_monitor import *
-
-global cdn_host, num_runs, video_name, manager, monitor
-global csv_trace_folder, trace_fields, out_csv_writer
-global diag_agent, diag_agent_info
-global client_name, client_ip, client_ID, client_info
+import client_config
 
 ## ==================================================================================================
 # define the simple client agent that only downloads videos from denoted server
@@ -27,13 +23,13 @@ def qdiag_client_agent():
 	## Process pool
 	procs = []
 
-	rsts, srv_ip = ft_mpd_parser(cdn_host, retry_num, video_name)
+	rsts, srv_ip = ft_mpd_parser(client_config.cdn_srv_addr, retry_num, client_config.video_name)
 	if not rsts:
 		return
 
 	## Fork a process doing traceroute to srv_ip and report it to the locator.
-	cdn_host_name = cdn_host.split('/')[0]
-	tr_proc = fork_cache_client_info(diag_agent, client_info, srv_ip, cdn_host_name, True)
+	cdn_host_name = client_config.cdn_host
+	tr_proc = fork_cache_client_info(client_config.diag_agent, client_config.client_info, srv_ip, client_config.cdn_host, True)
 	procs.append(tr_proc)
 
 	### ===========================================================================================================
@@ -74,19 +70,19 @@ def qdiag_client_agent():
 
 	## Download initial chunk
 	loadTS = time.time()
-	print "[" + client_ID + "] Start downloading video " + video_name + " at " + \
+	print "[" + client_config.client_ID + "] Start downloading video " + client_config.video_name + " at " + \
 		  datetime.datetime.fromtimestamp(int(loadTS)).strftime("%Y-%m-%d %H:%M:%S") + \
-		  " from server : " + cdn_host
+		  " from server : " + client_config.cdn_host
 
-	(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(cdn_host, retry_num, video_name, vidInit)
+	(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(client_config.cdn_srv_addr, retry_num, client_config.video_name, vidInit)
 	http_errors.update(error_codes)
 	if vchunk_sz == 0:
 		## Write out traces after finishing the streaming
-		writeHTTPError(client_ID, http_errors)
+		writeHTTPError(client_config.client_ID, http_errors)
 		return
 
 	startTS = time.time()
-	print "[" + client_ID + "] Start playing video at " + datetime.datetime.fromtimestamp(int(startTS)).strftime("%Y-%m-%d %H:%M:%S")
+	print "[" + client_config.client_ID + "] Start playing video at " + datetime.datetime.fromtimestamp(int(startTS)).strftime("%Y-%m-%d %H:%M:%S")
 	est_bw = vchunk_sz * 8 / (startTS - loadTS)
 	print "|-- TS --|-- Chunk # --|- Representation -|-- Linear QoE --|-- Cascading QoE --|-- Buffer --|-- Freezing --|-- Selected Server --|-- Chunk Response Time --|"
 	preTS = startTS
@@ -100,7 +96,7 @@ def qdiag_client_agent():
 		nextRep = findRep(sortedVids, est_bw, curBuffer, minBuffer)
 		vidChunk = reps[nextRep]['name'].replace('$Number$', str(chunkNext))
 		loadTS = time.time()
-		(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(cdn_host, retry_num, video_name, vidChunk)
+		(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(client_config.cdn_srv_addr, retry_num, client_config.video_name, vidChunk)
 
 		# If the client changes servers, get the traceroute to the new server.
 		if chunk_srv_ip != srv_ip:
@@ -108,15 +104,15 @@ def qdiag_client_agent():
 			srv_ip = chunk_srv_ip
 			eventType = "server_switch"
 			## Fork a process doing traceroute to srv_ip and report it to the locator.
-			tr_proc = fork_cache_client_info(diag_agent, client_info, srv_ip, cdn_host)
+			tr_proc = fork_cache_client_info(client_config.diag_agent, client_config.client_info, srv_ip, client_config.cdn_host)
 			procs.append(tr_proc)
-			event_proc = fork_add_event(diag_agent, client_ip, eventType, pre_srv_ip, srv_ip)
+			event_proc = fork_add_event(client_config.diag_agent, client_config.client_ip, eventType, pre_srv_ip, srv_ip)
 			procs.append(event_proc)
 
 		http_errors.update(error_codes)
 		if vchunk_sz == 0:
 			## Write out traces after finishing the streaming
-			writeHTTPError(client_ID, http_errors)
+			writeHTTPError(client_config.client_ID, http_errors)
 			return
 
 		curTS = time.time()
@@ -140,7 +136,7 @@ def qdiag_client_agent():
 
 		# Record QoE
 		qoe_queue.append(chunk_cascading_QoE)
-		add_qoe_proc = fork_add_qoe(monitor, client_ip, srv_ip, chunkNext, chunk_cascading_QoE)
+		add_qoe_proc = fork_add_qoe(client_config.monitor, client_config.client_ip, srv_ip, chunkNext, chunk_cascading_QoE)
 		procs.append(add_qoe_proc)
 
 		# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
@@ -152,7 +148,7 @@ def qdiag_client_agent():
 			cur_tr = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
 										Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time, ChunkID=chunkNext)
 
-			out_csv_writer.writerow(cur_tr)
+			client_config.out_csv_writer.writerow(cur_tr)
 
 		if chunk_srv_ip not in uniq_srvs:
 			uniq_srvs.append(chunk_srv_ip)
@@ -168,10 +164,10 @@ def qdiag_client_agent():
 			mnQoE = sum(recent_qoes) / float(len(recent_qoes))
 			[isAnomaly, anomaly_type] = detect_anomaly(recent_qoes)
 			if isAnomaly:
-				diag_p = fork_diagnose_anomaly(diag_agent, client_ip, srv_ip, mnQoE, anomaly_type)
+				diag_p = fork_diagnose_anomaly(client_config.diag_agent, client_config.client_ip, srv_ip, mnQoE, anomaly_type)
 				procs.append(diag_p)
 			else:
-				update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, mnQoE)
+				update_p = fork_update_attributes(client_config.diag_agent, client_config.client_ip, srv_ip, mnQoE)
 				procs.append(update_p)
 
 		preTS = curTS
@@ -180,7 +176,7 @@ def qdiag_client_agent():
 
 	## Write out traces after finishing the streaming
 	if http_errors:
-		writeTrace(client_ID + "_httperr", http_errors)
+		writeTrace(client_config.client_ID + "_httperr", http_errors)
 
 	for p in procs:
 		p.join(timeout=100)

@@ -94,9 +94,7 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
 
     client_info['route'] = cdnHops
 
-    # outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
-    # outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
-    outJsonFileName = os.path.pardir + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
+    outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
     with open(outJsonFileName, 'wb') as f:
         json.dump(client_info, f)
 
