@@ -9,7 +9,7 @@ if __name__ == '__main__':
     if sys.platform == 'win32':
         freeze_support()
 
-    duration_to_probe = 30
+    duration_to_probe = 3600
     step = 10
     manager = "manage.cmu-agens.com"
     cdn = "az.cmu-agens.com"
