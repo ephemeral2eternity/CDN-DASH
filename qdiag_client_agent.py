@@ -6,13 +6,14 @@ from utils.client_utils import *
 from anomaly.detect_anomaly import *
 from communication.comm_monitor import *
 import client_config
+import trace_writer
 
 ## ==================================================================================================
 # define the simple client agent that only downloads videos from denoted server
 # @input : srv_addr ---- the server name address
 #		   video_name --- the string name of the requested video
 ## ==================================================================================================
-def qdiag_client_agent():
+def qdiag_client_agent(csv_writer):
 	## Define all parameters used in this client
 	retry_num = 10
 
@@ -136,19 +137,18 @@ def qdiag_client_agent():
 
 		# Record QoE
 		qoe_queue.append(chunk_cascading_QoE)
-		add_qoe_proc = fork_add_qoe(client_config.monitor, client_config.client_ip, srv_ip, chunkNext, chunk_cascading_QoE)
-		procs.append(add_qoe_proc)
+		# add_qoe_proc = fork_add_qoe(client_config.monitor, client_config.client_ip, srv_ip, chunkNext, chunk_cascading_QoE)
+		# procs.append(add_qoe_proc)
 
 		# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
 
-		if (chunkNext > update_period):
-			print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
+		#if (chunkNext > update_period):
+		print "|---", str(curTS), "---|---", str(chunkNext), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
 				str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
 
-			cur_tr = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
+		cur_tr = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
 										Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time, ChunkID=chunkNext)
-
-			client_config.out_csv_writer.writerow(cur_tr)
+		csv_writer.writerow(cur_tr)
 
 		if chunk_srv_ip not in uniq_srvs:
 			uniq_srvs.append(chunk_srv_ip)

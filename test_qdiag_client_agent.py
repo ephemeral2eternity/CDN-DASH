@@ -6,8 +6,9 @@ import csv
 from qdiag_client_agent import *
 from multiprocessing import freeze_support
 from monitor.get_hop_info import *
-import client_config
 from utils.test_utils import *
+import client_config
+import trace_writer
 
 
 ## Denote the server info
@@ -16,8 +17,6 @@ from utils.test_utils import *
 if __name__ == '__main__':
 	if sys.platform == 'win32':
 		freeze_support()
-
-	client_config.init()
 
 	if len(sys.argv) > 2:
 		client_config.cdn_host = sys.argv[1]
@@ -29,12 +28,12 @@ if __name__ == '__main__':
 		client_config.client_name = sys.argv[3]
 
 	waitRandom(1, 300)
-	client_config.init()
+	csv_writer = trace_writer.initQoE()
 	for i in range(client_config.num_runs):
-		qdiag_client_agent()
+		qdiag_client_agent(csv_writer)
 
 		if os.path.exists(os.getcwd() + "/tmp/"):
 			shutil.rmtree(os.getcwd() + "/tmp/")
 
 	## Close tracefile
-	client_config.out_csv_writer.close()
+	trace_writer.out_qoe_trace.close()
