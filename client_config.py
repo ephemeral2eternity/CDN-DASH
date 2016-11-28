@@ -14,7 +14,7 @@ cdn_srv_addr = cdn_host + '/videos/'
 
 
 ### Parameters for verify agents
-duration_to_probe = 3600
+duration_to_probe = 30
 probe_step = 10
 
 csv_trace_folder = os.getcwd() + "/dataQoE/"

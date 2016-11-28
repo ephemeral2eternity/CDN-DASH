@@ -1,7 +1,7 @@
 import urllib2
 from monitor.ping import *
 
-def probeRTT(src, dst, results):
+def probeRTT(src, dst, rtt_csv_writer):
     rtt, srv_ip = getMnRTT(dst)
 
     if not srv_ip:
@@ -9,7 +9,7 @@ def probeRTT(src, dst, results):
 
     curTS = time.time()
     cur_rst = dict(TS=curTS, src=src, dst=srv_ip, rtt=rtt)
-    results.put(cur_rst)
+    rtt_csv_writer.writerow(cur_rst)
 
 def addRTT(monitor, src, dst, results):
     rtt, srv_ip = getMnRTT(dst)

@@ -27,8 +27,8 @@ def fork_diagnose_anomaly(diagAgent, client_ip, srv_ip, qoe, anomalyType):
     p.start()
     return p
 
-def fork_probe_rtt(src, dst, results):
-    p = Process(target=probeRTT, args=(src, dst, results))
+def fork_probe_rtt(src, dst, rtt_csv_writer):
+    p = Process(target=probeRTT, args=(src, dst, rtt_csv_writer))
     p.start()
     return p
 

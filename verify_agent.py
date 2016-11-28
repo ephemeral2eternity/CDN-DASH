@@ -1,7 +1,7 @@
 from communication.comm_manager import *
 from communication.thread_wrapper import *
 from monitor.get_hop_info import *
-from multiprocessing import freeze_support, Queue
+from multiprocessing import freeze_support
 from utils.client_utils import *
 import client_config
 import csv
@@ -28,24 +28,16 @@ if __name__ == '__main__':
 
     print verify_agents
 
-    results = Queue()
     for i in range(client_config.duration_to_probe/client_config.probe_step):
         time_start = time.time()
         procs = []
 
         for dst_ip in ips_to_probe:
-            p = fork_probe_rtt(my_ip, dst_ip, results)
+            p = fork_probe_rtt(my_ip, dst_ip, rtt_csv_writer)
             procs.append(p)
 
         for p in procs:
             p.join()
-
-        while not results.empty():
-            try:
-                rst = results.get()
-                rtt_csv_writer.writerow(rst)
-            except:
-                print "Failed to write results to the csv file!"
 
         ### Add report rtt to monitor server.
 
