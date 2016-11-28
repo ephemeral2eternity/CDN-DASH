@@ -60,10 +60,10 @@ target/
 # *.json
 
 # Experimental Results
-routeData/*
-dataQoE/*
-tmp/*
-hopData/*
-data/*
+routeData/
+dataQoE/
+tmp/
+hopData/
+data/
 config/cdn-qoes.json
 .idea/

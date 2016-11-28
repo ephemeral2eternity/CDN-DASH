@@ -7,9 +7,8 @@ from qdiag_client_agent import *
 from multiprocessing import freeze_support
 from monitor.get_hop_info import *
 from utils.test_utils import *
+from communication.connect_cloud_agent import *
 import client_config
-import trace_writer
-
 
 ## Denote the server info
 # cdn_host = 'cmu-agens.azureedge.net'
@@ -18,22 +17,40 @@ if __name__ == '__main__':
 	if sys.platform == 'win32':
 		freeze_support()
 
-	if len(sys.argv) > 2:
-		client_config.cdn_host = sys.argv[1]
+	# waitRandom(1, 300)
+	## ==================================================================================================
+	# Get Client INFO, streaming configuration file, CDN server and route to the CDN and report the route
+	# INFO to the anomaly locator agent
+	## ==================================================================================================
+	client_name = getMyName()
+	client_ip, client_info = get_ext_ip()
+	client_info['name'] = client_name
+	device_info = get_device_info()
+	client_info['device'] = device_info
+	## Create Trace CSV file
+	cur_ts = time.strftime("%m%d%H%M%S")
+	client_ID = client_name + "_" + cur_ts
+	client_info['id'] = client_ID
 
-	if len(sys.argv) > 2:
-		client_config.num_runs = int(sys.argv[2])
-	
-	if len(sys.argv) > 3:
-		client_config.client_name = sys.argv[3]
+	## ==================================================================================================
+	### Manager and monitor, etc.
+	## ==================================================================================================
+	diag_agent_info = get_my_cloud_agent(client_config.manager)
+	diag_agent = diag_agent_info['ip']
 
-	waitRandom(1, 300)
-	csv_writer = trace_writer.initQoE()
+	## ==================================================================================================
+	### Initialize the trace writer
+	## ==================================================================================================
+	qoe_trace_file = client_ID + "_QoE.csv"
+	out_qoe_trace = open(client_config.csv_trace_folder + qoe_trace_file, 'wb')
+	qoe_csv_writer = csv.DictWriter(out_qoe_trace, fieldnames=client_config.qoe_trace_fields)
+	qoe_csv_writer.writeheader()
+
 	for i in range(client_config.num_runs):
-		qdiag_client_agent(csv_writer)
+		qdiag_client_agent(diag_agent, client_info, qoe_csv_writer)
 
 		if os.path.exists(os.getcwd() + "/tmp/"):
 			shutil.rmtree(os.getcwd() + "/tmp/")
 
 	## Close tracefile
-	trace_writer.out_qoe_trace.close()
+	out_qoe_trace.close()
