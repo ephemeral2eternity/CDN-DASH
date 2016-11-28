@@ -17,7 +17,12 @@ if __name__ == '__main__':
 	if sys.platform == 'win32':
 		freeze_support()
 
-	# waitRandom(1, 300)
+	if len(sys.argv) > 1:
+		num_runs = int(sys.argv[1])
+	else:
+		num_runs = client_config.num_runs
+
+	waitRandom(1, 300)
 	## ==================================================================================================
 	# Get Client INFO, streaming configuration file, CDN server and route to the CDN and report the route
 	# INFO to the anomaly locator agent
@@ -46,7 +51,7 @@ if __name__ == '__main__':
 	qoe_csv_writer = csv.DictWriter(out_qoe_trace, fieldnames=client_config.qoe_trace_fields)
 	qoe_csv_writer.writeheader()
 
-	for i in range(client_config.num_runs):
+	for i in range(num_runs):
 		qdiag_client_agent(diag_agent, client_info, qoe_csv_writer)
 
 		if os.path.exists(os.getcwd() + "/tmp/"):

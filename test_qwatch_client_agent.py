@@ -20,7 +20,8 @@ if __name__ == '__main__':
 	if len(sys.argv) > 2:
 		cdn_host = sys.argv[1]
 	else:
-		cdn_host = "cache.cmu-agens.com"
+		cdn_host = "az.cmu-agens.com"
+
 	if len(sys.argv) > 2:
 		num_runs = int(sys.argv[2])
 	else:
@@ -29,9 +30,7 @@ if __name__ == '__main__':
 	if len(sys.argv) > 3:
 		client_name = sys.argv[3]
 	else:
-		# client_name = "local"
 		client_name = getMyName()
-
 
 	video_name = 'BBB'
 

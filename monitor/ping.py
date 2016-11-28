@@ -75,6 +75,7 @@ def pingVMs(vmList):
         srvRTTs[srv] = mnRTT
     return srvRTTs
 
+
 if __name__ == "__main__":
     time_start = time.time()
     mnRTT, srv_ip = getMnRTT('az.cmu-agens.com')
