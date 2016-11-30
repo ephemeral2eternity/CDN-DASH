@@ -30,7 +30,7 @@ def dash_client(srv_addr, video_name, method=None):
 	## ==================================================================================================
 	## Parse the mpd file for the streaming video
 	## ==================================================================================================
-	rsts = ft_mpd_parser(srv_addr, retry_num, video_name)
+	rsts, srv_ip = ft_mpd_parser(srv_addr, retry_num, video_name)
 	if not rsts:
 		return
 
