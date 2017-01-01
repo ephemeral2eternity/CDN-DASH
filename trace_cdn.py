@@ -1,7 +1,8 @@
-## Streaming Videos from a CDN and do traceroute and pings to the CDN
 # trace_cdn.py
 # Chen Wang, Mar. 3, 2016
-# chenw@cmu.edu
+## chenw@cmu.edu
+#### Report the route of the CDN video session to manager : http://manage.cmu-agens.com/verify
+#### Pick up 10 nodes to do traceroute and get the verify agents
 from monitor.get_hop_info import *
 from communication.comm_manager import *
 from communication.connect_cloud_agent import *
@@ -13,10 +14,10 @@ from utils.test_utils import *
 # cdn_host = 'aws.cmu-agens.com'
 cdn_host = 'az.cmu-agens.com'
 video_name = 'BBB'
-manager = 'superman.andrew.cmu.edu:8000'
-# manager = 'manage.cmu-agens.com'
+# manager = 'superman.andrew.cmu.edu:8000'
+manager = 'manage.cmu-agens.com'
 
-## Connect cloud agent and notify the manager
+## Connect cloud agent and add the client itself to available clients in the manager
 cloud_agent = connect_cloud_agent(manager)
 
 ## Traceroute to the CDN to get the video session
@@ -28,41 +29,14 @@ cdnHops = get_hop_by_host(cdn_host)
 client_info['server'] = srv_info
 client_info['route'] = cdnHops
 
-# waitRandom(1, 100)
+waitRandom(1, 100)
 success = report_video_session(manager, client_info)
 if success:
     print "Successfully report nodes on sesssion of (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
 else:
-    print "Failed to run http://manager/nodeinfo/add!"
-
-success = report_video_session(manager, client_info)
-if success:
-    print "Successfully report video session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
-else:
-    print "Failed to run http://manager/verify/add_video_session!"
+    print "Failed to run http://manage.cmu-agens.com/verify/add_video_session!"
 
 #### Obtain verification agents
-agent_name = "planetlab1.rutgers.edu"
-agent_ip = host2ip(agent_name)
-srv_info = get_node_info(agent_ip, "server")
-agent_cdn_hops = get_hop_by_host(agent_name)
-client_info['server'] = srv_info
-client_info['route'] = agent_cdn_hops
-
-success = report_verify_session(manager, client_info)
-if success:
-    print "Successfully report nodes on session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
-else:
-    print "Failed to run http://manager/nodeinfo/add!"
-
-success = report_verify_session(manager, client_info)
-if success:
-    print "Successfully report verification session (%s, %s) to manager!" % (
-    client_info['ip'], client_info['server']['ip'])
-else:
-    print "Failed to run http://manager/verify/add_verify_session!"
-
-'''
 K = 10
 all_nodes = get_all_nodes(manager)
 if 'client' in all_nodes.keys():
@@ -84,25 +58,10 @@ if 'client' in all_nodes.keys():
         if success:
             print "Successfully report nodes on session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
         else:
-            print "Failed to run http://manager/nodeinfo/add!"
+            print "Failed to run http://manage.cmu-agens.com/verify/add_verify_session!"
 
-        success = report_verify_session(manager, client_info)
-        if success:
-            print "Successfully report verification session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
-        else:
-            print "Failed to run http://manager/verify/add_verify_session!"
 else:
     print "Failed to obtain the list of clients"
-'''
-
-'''
-for client_key in client_info.keys():
-	if client_key == 'route':
-		for node in client_info[client_key]:
-			print node
-	else:
-		print client_key, client_info[client_key]
-'''
 
 ### Get the server to start streaming
 #for i in range(1):
