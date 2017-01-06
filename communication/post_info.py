@@ -182,6 +182,14 @@ if __name__ == '__main__':
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     # print isUpdated
 
+    qoe = 3.2
+    # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
+    isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
+
+    qoe = 2.8
+    # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
+    isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
+    '''
     eventType = "SRV_CHANGE"
     preVal = server_ip
     server_ip = "72.21.81.200"
@@ -191,8 +199,11 @@ if __name__ == '__main__':
     isAdded = add_event(diagAgent, client_ip, eventType, preVal, curVal)
     print isAdded
 
+    '''
+
     anomalyType = "occasional"
     qoe = 1.2
+    isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     diagResult = diagnose_anomaly(diagAgent, client_ip, server_ip, qoe, anomalyType)
     print diagResult
 
