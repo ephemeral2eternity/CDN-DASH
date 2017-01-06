@@ -84,7 +84,7 @@ def traceroute(host):
                 tr_data.remove(hop_name)
 
             hop['ip'] = addr
-            if addr_ind > 0:
+            if addr in tr_data:
                 tr_data.remove(addr)
             tr_data.pop(0)
 
@@ -125,6 +125,9 @@ def trVMs(vmList):
     return srvHops
 
 if __name__ == "__main__":
-    # hops = traceroute('az.cmu-agens.com')
-    hops = traceroute('plonk.cs.uwaterloo.ca')
+    hops = traceroute('az.cmu-agens.com')
+    # hops = traceroute('plonk.cs.uwaterloo.ca')
+    print hops
+
+    hops = traceroute('93.184.221.200')
     print hops

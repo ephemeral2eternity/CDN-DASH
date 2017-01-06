@@ -172,7 +172,7 @@ def route2str(full_route):
 if __name__ == '__main__':
     server_ip = "93.184.221.200"
     cdn_host = "az.cmu-agens.com"
-    diagAgent = "40.117.35.106"
+    diagAgent = "superman.andrew.cmu.edu:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
     client_info["device"] = get_device_info()
@@ -182,7 +182,7 @@ if __name__ == '__main__':
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     # print isUpdated
 
-    eventType = "server_switch"
+    eventType = "SRV_CHANGE"
     preVal = server_ip
     server_ip = "72.21.81.200"
     curVal = server_ip
@@ -194,6 +194,7 @@ if __name__ == '__main__':
     anomalyType = "occasional"
     qoe = 1.2
     diagResult = diagnose_anomaly(diagAgent, client_ip, server_ip, qoe, anomalyType)
+    print diagResult
 
     #isUpdated = updateRoute(locator, client_ip, srv2_ip, qoe)
     #print isUpdated
