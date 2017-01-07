@@ -170,7 +170,8 @@ def route2str(full_route):
     return route_str
 
 if __name__ == '__main__':
-    server_ip = "93.184.221.200"
+    # server_ip = "93.184.221.200"
+    server_ip = "72.21.81.200"
     cdn_host = "az.cmu-agens.com"
     diagAgent = "superman.andrew.cmu.edu:8000"
     client_ip, client_info = get_ext_ip()
@@ -202,7 +203,7 @@ if __name__ == '__main__':
     '''
 
     anomalyType = "occasional"
-    qoe = 1.2
+    qoe = 1.7
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     diagResult = diagnose_anomaly(diagAgent, client_ip, server_ip, qoe, anomalyType)
     print diagResult
