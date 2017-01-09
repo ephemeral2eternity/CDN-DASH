@@ -173,7 +173,7 @@ if __name__ == '__main__':
     # server_ip = "93.184.221.200"
     server_ip = "72.21.81.200"
     cdn_host = "az.cmu-agens.com"
-    diagAgent = "superman.andrew.cmu.edu:8000"
+    diagAgent = "127.0.0.1:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
     client_info["device"] = get_device_info()
