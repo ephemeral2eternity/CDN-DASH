@@ -1,8 +1,8 @@
 ## Common parameters
 import os
 
-# cdn_host = "cache-01.cmu-agens.com"
-cdn_host = "az.cmu-agens.com"
+cdn_host = "cache-01.cmu-agens.com"
+# cdn_host = "az.cmu-agens.com"
 manager = "manage.cmu-agens.com"
 monitor = "monitor.cmu-agens.com"
 
@@ -12,6 +12,8 @@ video_name = "BBB"
 update_period = 6
 cdn_srv_addr = cdn_host + '/videos/'
 
+## Parameter for the user device
+device_id = 1
 
 ### Parameters for verify agents
 duration_to_probe = 3600

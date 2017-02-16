@@ -121,7 +121,8 @@ if __name__ == "__main__":
     # cdn_host = "aws.cmu-agens.com"
     cdn_host = "az.cmu-agens.com"
     full_hops = get_hop_by_host(cdn_host)
-    print full_hops
+    with open("tmp-trace.json", "w") as f:
+        json.dump(full_hops, f, indent=4)
     # file_path = os.path.dirname(__file__)
     # hop_file = file_path + '/config/all_hops.json'
     # get_hop_by_user(hop_file)

@@ -1,0 +1,110 @@
+[
+    {
+        "city": "Pittsburgh", 
+        "name": "POD-A-VL57.GW.CMU.NET", 
+        "country": "US", 
+        "region": "Pennsylvania", 
+        "ISP": "Carnegie Mellon University", 
+        "longitude": "-79.95610", 
+        "AS": 9, 
+        "ip": "128.2.56.1", 
+        "latitude": "40.44390", 
+        "type": "router"
+    }, 
+    {
+        "city": "Pittsburgh", 
+        "name": "CORE0-POD-A.GW.CMU.NET", 
+        "country": "US", 
+        "region": "Pennsylvania", 
+        "ISP": "Carnegie Mellon University", 
+        "longitude": "-79.95610", 
+        "AS": 9, 
+        "ip": "128.2.0.153", 
+        "latitude": "40.44390", 
+        "type": "router"
+    }, 
+    {
+        "city": "", 
+        "name": "pod-i-dcns-core0.gw.cmu.net", 
+        "country": "", 
+        "region": "", 
+        "ISP": "Carnegie Mellon University", 
+        "longitude": "-79.95610", 
+        "AS": 9, 
+        "ip": "128.2.0.194", 
+        "latitude": "40.44390", 
+        "type": "router"
+    }, 
+    {
+        "city": "", 
+        "name": "ae-0.520.rtr01.acma.net.pennren.net", 
+        "country": "", 
+        "region": "", 
+        "ISP": "KINBER", 
+        "longitude": "-79.71770", 
+        "AS": 14877, 
+        "ip": "162.223.18.42", 
+        "latitude": "40.31780", 
+        "type": "router"
+    }, 
+    {
+        "city": "", 
+        "name": "tr-cps.pennren.3rox.net", 
+        "country": "", 
+        "region": "", 
+        "ISP": "Pittsburgh Supercomputing Center", 
+        "longitude": "-79.95610", 
+        "AS": 5050, 
+        "ip": "147.73.18.143", 
+        "latitude": "40.44390", 
+        "type": "router"
+    }, 
+    {
+        "city": "Ann Arbor", 
+        "name": "et-7-0-0.513.rtr.eqch.net.internet2.edu", 
+        "country": "US", 
+        "region": "Michigan", 
+        "ISP": "Internet2", 
+        "longitude": "-83.71330", 
+        "AS": 11164, 
+        "ip": "198.71.47.183", 
+        "latitude": "42.27340", 
+        "type": "router"
+    }, 
+    {
+        "city": "Ann Arbor", 
+        "name": "198.71.47.251", 
+        "country": "US", 
+        "region": "Michigan", 
+        "ISP": "Internet2", 
+        "longitude": "-83.71330", 
+        "AS": 11164, 
+        "ip": "198.71.47.251", 
+        "latitude": "42.27340", 
+        "type": "router"
+    }, 
+    {
+        "city": "Santa Monica", 
+        "name": "192.229.227.135", 
+        "country": "US", 
+        "region": "California", 
+        "ISP": "MCI Communications Services, Inc. d/b/a Verizon Business", 
+        "longitude": "-118.46820", 
+        "AS": 15133, 
+        "ip": "192.229.227.135", 
+        "latitude": "34.01190", 
+        "type": "router"
+    }, 
+    {
+        "city": "Ashburn", 
+        "name": "72.21.81.200", 
+        "country": "United States", 
+        "region": "Virginia", 
+        "ISP": "MCI Communications Services, Inc. d/b/a Verizon Business", 
+        "longitude": "-77.53900", 
+        "AS": 15133, 
+        "ip": "72.21.81.200", 
+        "latitude": "39.01800", 
+        "type": "server"
+    }
+]

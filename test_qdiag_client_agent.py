@@ -30,7 +30,7 @@ if __name__ == '__main__':
 	client_name = getMyName()
 	client_ip, client_info = get_ext_ip()
 	client_info['name'] = client_name
-	device_info = get_device_info()
+	device_info = get_device(client_config.device_id)
 	client_info['device'] = device_info
 	## Create Trace CSV file
 	cur_ts = time.strftime("%m%d%H%M%S")
