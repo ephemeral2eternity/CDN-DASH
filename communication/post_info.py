@@ -173,7 +173,7 @@ if __name__ == '__main__':
     # server_ip = "93.184.221.200"
     server_ip = "72.21.81.200"
     cdn_host = "az.cmu-agens.com"
-    diagAgent = "superman.andrew.cmu.edu:8000"
+    diagAgent = "127.0.0.1:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
     client_info["device"] = get_device_info()
@@ -190,23 +190,20 @@ if __name__ == '__main__':
     qoe = 2.8
     # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
-    '''
+
     eventType = "SRV_CHANGE"
     preVal = server_ip
-    server_ip = "72.21.81.200"
+    server_ip = "192.16.48.200"
     curVal = server_ip
 
     cache_client_info(diagAgent, client_info, server_ip, cdn_host)
     isAdded = add_event(diagAgent, client_ip, eventType, preVal, curVal)
     print isAdded
 
-    '''
-
     anomalyType = "occasional"
     qoe = 1.7
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     diagResult = diagnose_anomaly(diagAgent, client_ip, server_ip, qoe, anomalyType)
-    print diagResult
 
     #isUpdated = updateRoute(locator, client_ip, srv2_ip, qoe)
     #print isUpdated
