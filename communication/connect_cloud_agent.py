@@ -20,19 +20,26 @@ def get_cloud_agents(manager):
 
     return cloud_agents
 
-def get_my_cloud_agent(manager, method="geo"):
-    url = "http://%s/client/getLocator?method=%s" % (manager, method)
+def get_my_cloud_agent(manager, name="geo"):
+    if (name == "geo") or (name == "net"):
+        url = "http://%s/client/getLocator?method=%s" % (manager, name)
 
-    my_cloud_agent = {}
-    try:
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
-        my_cloud_agent = json.load(response)
-    except:
-        print "Failed to contact the manager! Please check the status of " + manager + "!"
+        my_cloud_agent = {}
+        try:
+            req = urllib2.Request(url)
+            response = urllib2.urlopen(req)
+            my_cloud_agent = json.load(response)
+        except:
+            print "Failed to contact the manager! Please check the status of " + manager + "!"
 
-    if not my_cloud_agent:
-        my_cloud_agent = connect_cloud_agent(manager, method)
+        if not my_cloud_agent:
+            my_cloud_agent = connect_cloud_agent(manager, name)
+    else:
+        cloud_agents = get_cloud_agents(manager)
+        for cloud_agent in cloud_agents:
+            if cloud_agent["name"] == name:
+                my_cloud_agent = cloud_agent
+                break
 
     return my_cloud_agent
 
@@ -116,6 +123,6 @@ def connect_cloud_agent(manager, method="geo"):
 
 if __name__ == '__main__':
     manager = "manage.cmu-agens.com"
-    my_cloud_agent = get_my_cloud_agent(manager, 'net')
+    my_cloud_agent = get_my_cloud_agent(manager, 'locator-02')
     print "Connected cloud agent: ", my_cloud_agent
 

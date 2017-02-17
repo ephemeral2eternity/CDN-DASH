@@ -40,7 +40,7 @@ if __name__ == '__main__':
 	## ==================================================================================================
 	### Manager and monitor, etc.
 	## ==================================================================================================
-	diag_agent_info = get_my_cloud_agent(client_config.manager)
+	diag_agent_info = get_my_cloud_agent(client_config.manager, client_config.locator)
 	diag_agent = diag_agent_info['ip']
 
 	## ==================================================================================================
