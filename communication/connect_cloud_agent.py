@@ -21,10 +21,10 @@ def get_cloud_agents(manager):
     return cloud_agents
 
 def get_my_cloud_agent(manager, name="geo"):
+    my_cloud_agent = {}
     if (name == "geo") or (name == "net"):
         url = "http://%s/client/getLocator?method=%s" % (manager, name)
 
-        my_cloud_agent = {}
         try:
             req = urllib2.Request(url)
             response = urllib2.urlopen(req)
