@@ -8,9 +8,9 @@ locator = "locator-02"
 monitor = "monitor.cmu-agens.com"
 
 ### Parameters for streaming
-num_runs = 5
+num_runs = 1
 video_name = "BBB"
-update_period = 6
+update_period = 12
 cdn_srv_addr = cdn_host + '/videos/'
 
 ## Parameter for the user device
