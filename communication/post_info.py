@@ -64,19 +64,42 @@ def updateRoute(locator, client_ip, srv_ip, qoe):
 
 
 def updateAttribute(diagAgent, client_ip, srv_ip, qoe):
-    url = "http://%s/diag/update?client=%s&server=%s&qoe=%f" % (diagAgent, client_ip, srv_ip, qoe)
+    if type(qoe) is dict:
+        qoe_obj = {
+            "client": client_ip,
+            "server": srv_ip,
+            "qoes": qoe
+        }
 
-    isUpdated = True
-    try:
-        response = urllib2.urlopen(url)
-        response_str = response.read()
-        if response_str == "Yes":
-            isUpdated = True
-        else:
+        url = "http://%s/diag/update" % diagAgent
+        isUpdated = True
+        try:
+            req = urllib2.Request(url)
+            req.add_header('Content-Type', 'application/json')
+            response = urllib2.urlopen(req, json.dumps(qoe_obj))
+            response_str = response.read()
+            if response_str == "Yes":
+                isUpdated = True
+            else:
+                isUpdated = False
+        except:
             isUpdated = False
-    except:
-        isRouteUpdated = False
-        print "Failed to update good QoE to %s" % diagAgent
+
+        return isUpdated
+    else:
+        url = "http://%s/diag/update?client=%s&server=%s&qoe=%f" % (diagAgent, client_ip, srv_ip, qoe)
+
+        isUpdated = True
+        try:
+            response = urllib2.urlopen(url)
+            response_str = response.read()
+            if response_str == "Yes":
+                isUpdated = True
+            else:
+                isUpdated = False
+        except:
+            isUpdated = False
+            print "Failed to update good QoE to %s" % diagAgent
 
     return isUpdated
 
@@ -171,18 +194,34 @@ def route2str(full_route):
 
 if __name__ == '__main__':
     # server_ip = "93.184.221.200"
-    server_ip = "72.21.81.200"
-    cdn_host = "az.cmu-agens.com"
+    server_ip = "40.122.214.243"
+    cdn_host = "cache-01.cmu-agens.com"
     diagAgent = "127.0.0.1:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
-    client_info["device"] = get_device_info()
+    client_info["device"] = get_device()
     cache_client_info(diagAgent, client_info, server_ip, cdn_host)
-    qoe = 3.5
+    qoe = {
+        1487709075:0.134495992,
+        1487709076:3.592382632,
+        1487709077:4.648497786,
+        1487709078:4.648497786,
+        1487709083:4.999907212,
+        1487709087:4.999907212,
+        1487709089:4.999907212,
+        1487709091:4.999907212,
+        1487709092:4.999907212,
+        1487709097:4.999907212,
+        1487709102:4.999907212,
+        1487709106:4.999907212
+    }
     # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     # print isUpdated
 
+    # isUpdated = updateAttribute(diagAgent, client_ip, server_ip, 4.5)
+
+    '''
     qoe = 3.2
     # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
@@ -211,3 +250,4 @@ if __name__ == '__main__':
     # client_ip = "128.237.191.151"
     # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
     # anomaly_info = locate_anomaly(locator, client_ip, srv2_ip, qoe)
+    '''

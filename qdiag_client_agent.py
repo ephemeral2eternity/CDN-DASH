@@ -7,6 +7,16 @@ from anomaly.detect_anomaly import *
 from communication.comm_monitor import *
 import client_config
 
+def get_recent_qoes(qoe_queue):
+	tses = sorted(qoe_queue.keys())
+	recent_tses = tses[-client_config.update_period:]
+
+	recent_qoes = {}
+	for ts in recent_tses:
+		recent_qoes[ts] = qoe_queue[ts]
+	return recent_qoes
+
+
 ## ==================================================================================================
 # define the simple client agent that only downloads videos from denoted server
 # @input : srv_addr ---- the server name address
@@ -17,7 +27,7 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer):
 	retry_num = 10
 
 	## CDN SQS
-	qoe_queue = []
+	qoe_queue = {}
 	uniq_srvs = []
 
 	## Process pool
@@ -68,7 +78,6 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer):
 	chunk_download = 0
 
 	## Traces to write out
-	client_tr = {}
 	http_errors = {}
 
 	## Download initial chunk
@@ -138,7 +147,7 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer):
 		chunk_cascading_QoE = computeCasQoE(freezingTime, curBW, maxBW)
 
 		# Record QoE
-		qoe_queue.append(chunk_cascading_QoE)
+		qoe_queue[curTS] = chunk_cascading_QoE
 		# add_qoe_proc = fork_add_qoe(client_config.monitor, client_config.client_ip, srv_ip, chunkNext, chunk_cascading_QoE)
 		# procs.append(add_qoe_proc)
 
@@ -160,15 +169,14 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer):
 			time.sleep(curBuffer - 30)
 
 		## Report QoE if SLA is not satisfied
-		if (chunk_cascading_QoE < qoe_th):
-			update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, chunk_cascading_QoE)
-			procs.append(update_p)
+		#if (chunk_cascading_QoE < qoe_th):
+		#	update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, chunk_cascading_QoE)
+		#	procs.append(update_p)
 
 		## Detect anomalies or send updates periodically
 		if (chunkNext % client_config.update_period == 0) and (chunkNext > client_config.update_period - 1):
-			recent_qoes = qoe_queue[-client_config.update_period:]
-			mnQoE = sum(recent_qoes) / float(len(recent_qoes))
-			update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, mnQoE)
+			recent_qoes = get_recent_qoes(qoe_queue)
+			update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, recent_qoes)
 			procs.append(update_p)
 			[isAnomaly, anomaly_type] = detect_anomaly(recent_qoes)
 			if isAnomaly:

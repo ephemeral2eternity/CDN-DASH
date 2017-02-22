@@ -4,7 +4,7 @@ import os
 cdn_host = "cache-01.cmu-agens.com"
 # cdn_host = "az.cmu-agens.com"
 manager = "manage.cmu-agens.com"
-locator = "locator-02"
+locator = "local"
 monitor = "monitor.cmu-agens.com"
 
 ### Parameters for streaming
