@@ -168,13 +168,12 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer):
 		if (chunkNext % client_config.update_period == 0) and (chunkNext > client_config.update_period - 1):
 			recent_qoes = qoe_queue[-client_config.update_period:]
 			mnQoE = sum(recent_qoes) / float(len(recent_qoes))
+			update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, mnQoE)
+			procs.append(update_p)
 			[isAnomaly, anomaly_type] = detect_anomaly(recent_qoes)
 			if isAnomaly:
 				diag_p = fork_diagnose_anomaly(diag_agent, client_ip, srv_ip, mnQoE, anomaly_type)
 				procs.append(diag_p)
-			else:
-				update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, mnQoE)
-				procs.append(update_p)
 
 		preTS = curTS
 		chunk_download += 1
