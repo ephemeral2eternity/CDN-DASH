@@ -12,9 +12,13 @@ def get_recent_qoes(qoe_queue):
 	recent_tses = tses[-client_config.update_period:]
 
 	recent_qoes = {}
+	total_qoe = 0
 	for ts in recent_tses:
 		recent_qoes[ts] = qoe_queue[ts]
-	return recent_qoes
+		total_qoe += recent_qoes[ts]
+
+	mnQoE = total_qoe / float(len(recent_tses))
+	return recent_qoes, mnQoE
 
 
 ## ==================================================================================================
@@ -175,7 +179,7 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer):
 
 		## Detect anomalies or send updates periodically
 		if (chunkNext % client_config.update_period == 0) and (chunkNext > client_config.update_period - 1):
-			recent_qoes = get_recent_qoes(qoe_queue)
+			recent_qoes, mnQoE = get_recent_qoes(qoe_queue)
 			update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, recent_qoes)
 			procs.append(update_p)
 			[isAnomaly, anomaly_type] = detect_anomaly(recent_qoes)

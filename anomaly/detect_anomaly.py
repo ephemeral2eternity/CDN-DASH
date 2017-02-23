@@ -5,7 +5,7 @@
 from utils.params import *
 
 def detect_anomaly(recent_qoes):
-    anomaly_idx = [x for x in recent_qoes if x <= qoe_th]
+    anomaly_idx = [x for x in recent_qoes.values() if x <= qoe_th]
     anomaly_pts = len(anomaly_idx)
     total_pts = len(recent_qoes)
     if anomaly_pts > 0:
