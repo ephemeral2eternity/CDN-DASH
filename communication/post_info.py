@@ -194,15 +194,41 @@ def route2str(full_route):
 
 if __name__ == '__main__':
     # server_ip = "93.184.221.200"
-    server_ip = "40.122.214.243"
-    cdn_host = "cache-01.cmu-agens.com"
+   # server_ip = "40.122.214.243"
+    server_ip = "72.21.81.200"
+    # cdn_host = "cache-01.cmu-agens.com"
+    cdn_host = "az.cmu-agens.com"
     diagAgent = "127.0.0.1:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
     client_info["device"] = get_device()
     cache_client_info(diagAgent, client_info, server_ip, cdn_host)
+
     qoe = {
-        1487709075:0.134495992,
+        1488780331.39: 3.134495992,
+        1488780337.99: 4.592382632,
+        1488780340.52: 3.648497786,
+        1488780341.89: 3.648497786,
+        1488780358.54: 1.43717794897,
+        1488780362.21:  1.26574473389,
+        1488780365.25: 1.26574473389,
+        1488780367.19: 1.26574473389,
+        1488780369.37: 1.26574473389,
+        1488780370.86: 0.134495992112,
+        1488780373.65: 1.26574473389,
+        1488780375.27: 1.26574473389
+    }
+
+    isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
+    print isUpdated
+
+    #cdn_host = "cache-01.cmu-agens.com"
+    #server_ip = "40.122.214.243"
+    # cache_client_info(diagAgent, client_info, server_ip, cdn_host)
+
+    '''
+    qoe = {
+        1487709075:4.134495992,
         1487709076:3.592382632,
         1487709077:4.648497786,
         1487709078:4.648497786,
@@ -216,20 +242,29 @@ if __name__ == '__main__':
         1487709106:4.999907212
     }
     # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
-    isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
+    #isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     # print isUpdated
-
-    # isUpdated = updateAttribute(diagAgent, client_ip, server_ip, 4.5)
+    '''
 
     '''
-    qoe = 3.2
-    # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
-    isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
+    qoe = {
+        1487709075: 3.134495992,
+        1487709076: 4.592382632,
+        1487709077: 3.648497786,
+        1487709078: 3.648497786,
+        1487709083: 0.999907212,
+        1487709087: 0.999907212,
+        1487709089: 0.999907212,
+        1487709091: 4.999907212,
+        1487709092: 4.999907212,
+        1487709097: 4.999907212,
+        1487709102: 4.999907212,
+        1487709106: 4.999907212
+    }
+    '''
 
-    qoe = 2.8
-    # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
-    isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
 
+    '''
     eventType = "SRV_CHANGE"
     preVal = server_ip
     server_ip = "192.16.48.200"

@@ -174,18 +174,20 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer):
 
 		## Report QoE if SLA is not satisfied
 		#if (chunk_cascading_QoE < qoe_th):
-		#	update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, chunk_cascading_QoE)
+		#	update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, qoe_queue)
 		#	procs.append(update_p)
+		#	qoe_queue = {}
 
 		## Detect anomalies or send updates periodically
-		if (chunkNext % client_config.update_period == 0) and (chunkNext > client_config.update_period - 1):
-			recent_qoes, mnQoE = get_recent_qoes(qoe_queue)
-			update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, recent_qoes)
+		if len(qoe_queue) > client_config.update_period:
+			# recent_qoes, mnQoE = get_recent_qoes(qoe_queue)
+			update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, qoe_queue)
 			procs.append(update_p)
-			[isAnomaly, anomaly_type] = detect_anomaly(recent_qoes)
-			if isAnomaly:
-				diag_p = fork_diagnose_anomaly(diag_agent, client_ip, srv_ip, mnQoE, anomaly_type)
-				procs.append(diag_p)
+			qoe_queue = {}
+			#[isAnomaly, anomaly_type] = detect_anomaly(recent_qoes)
+			#if isAnomaly:
+			#	diag_p = fork_diagnose_anomaly(diag_agent, client_ip, srv_ip, mnQoE, anomaly_type)
+			#	procs.append(diag_p)
 
 		preTS = curTS
 		chunk_download += 1
