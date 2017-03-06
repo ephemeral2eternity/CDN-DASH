@@ -22,7 +22,7 @@ if __name__ == '__main__':
 	else:
 		num_runs = client_config.num_runs
 
-	# waitRandom(1, 300)
+	waitRandom(1, 300)
 	## ==================================================================================================
 	# Get Client INFO, streaming configuration file, CDN server and route to the CDN and report the route
 	# INFO to the anomaly locator agent
