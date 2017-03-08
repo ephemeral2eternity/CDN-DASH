@@ -37,6 +37,9 @@ def get_my_cloud_agent(manager, name="geo"):
     elif name == "local":
         my_cloud_agent["name"] = "local"
         my_cloud_agent["ip"] = "127.0.0.1:8000"
+    elif name == "superman":
+        my_cloud_agent["name"] = "superman"
+        my_cloud_agent["ip"] = "superman.andrew.cmu.edu:8000"
     else:
         cloud_agents = get_cloud_agents(manager)
         for cloud_agent in cloud_agents:

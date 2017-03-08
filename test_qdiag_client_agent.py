@@ -51,11 +51,11 @@ if __name__ == '__main__':
 	qoe_csv_writer = csv.DictWriter(out_qoe_trace, fieldnames=client_config.qoe_trace_fields)
 	qoe_csv_writer.writeheader()
 
-	for i in range(num_runs):
-		qdiag_client_agent(diag_agent, client_info, qoe_csv_writer)
+	# for i in range(num_runs):
+	qdiag_client_agent(diag_agent, client_info, qoe_csv_writer, num_runs)
 
-		if os.path.exists(os.getcwd() + "/tmp/"):
-			shutil.rmtree(os.getcwd() + "/tmp/")
+	if os.path.exists(os.getcwd() + "/tmp/"):
+		shutil.rmtree(os.getcwd() + "/tmp/")
 
 	## Close tracefile
 	out_qoe_trace.close()
