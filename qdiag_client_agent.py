@@ -82,9 +82,9 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 
 	## Download initial chunk
 	loadTS = time.time()
-	print "[" + client_ID + "] Start downloading video " + client_config.video_name + " at " + \
+	print("[" + client_ID + "] Start downloading video " + client_config.video_name + " at " + \
 		  datetime.datetime.fromtimestamp(int(loadTS)).strftime("%Y-%m-%d %H:%M:%S") + \
-		  " from server : " + client_config.cdn_host
+		  " from server : " + client_config.cdn_host)
 
 	(vchunk_sz, chunk_srv_ip, error_codes) = ft_download_chunk(client_config.cdn_srv_addr, retry_num, client_config.video_name, vidInit)
 	http_errors.update(error_codes)
@@ -94,9 +94,9 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 		return
 
 	startTS = time.time()
-	print "[" + client_ID + "] Start playing video at " + datetime.datetime.fromtimestamp(int(startTS)).strftime("%Y-%m-%d %H:%M:%S")
+	print("[" + client_ID + "] Start playing video at " + datetime.datetime.fromtimestamp(int(startTS)).strftime("%Y-%m-%d %H:%M:%S"))
 	est_bw = vchunk_sz * 8 / (startTS - loadTS)
-	print "|-- TS --|-- Chunk # --|- Representation -|-- Linear QoE --|-- Cascading QoE --|-- Buffer --|-- Freezing --|-- Selected Server --|-- Chunk Response Time --|"
+	print("|-- TS --|-- Chunk # --|- Representation -|-- Linear QoE --|-- Cascading QoE --|-- Buffer --|-- Freezing --|-- Selected Server --|-- Chunk Response Time --|")
 	preTS = startTS
 	curBuffer += chunkLen
 
@@ -105,7 +105,9 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 		tr_proc = fork_cache_client_info(diag_agent, client_info, srv_ip, client_config.cdn_host, True)
 		procs.append(tr_proc)
 
-		chunk_download = 1
+		print("Streaming in the " + str(run_iter) + " loop.")
+
+		chunkNext = int(reps[minID]['start']) + 1
 
 		## ==================================================================================================
 		# Start streaming the video
@@ -160,8 +162,8 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 
 			# print "Chunk Size: ", vchunk_sz, "estimated throughput: ", est_bw, " current bitrate: ", curBW
 
-			print "|---", str(curTS), "---|---", str(abs_chunk_id), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
-					str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|"
+			print("|---", str(curTS), "---|---", str(abs_chunk_id), "---|---", nextRep, "---|---", str(chunk_linear_QoE), "---|---", \
+					str(chunk_cascading_QoE), "---|---", str(curBuffer), "---|---", str(freezingTime), "---|---", chunk_srv_ip, "---|---", str(rsp_time), "---|")
 
 			cur_tr = dict(TS=curTS, Representation=nextRep, QoE1=chunk_linear_QoE, QoE2=chunk_cascading_QoE, Buffer=curBuffer, \
 											Freezing=freezingTime, Server=chunk_srv_ip, Response=rsp_time, ChunkID=abs_chunk_id)
