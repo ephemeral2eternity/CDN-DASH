@@ -1,14 +1,14 @@
 ## Common parameters
 import os
 
-cdn_host = "cache-01.cmu-agens.com"
-# cdn_host = "az.cmu-agens.com"
+# cdn_host = "cache-01.cmu-agens.com"
+cdn_host = "az.cmu-agens.com"
 manager = "manage.cmu-agens.com"
-locator = "superman"
+locator = "geo"
 monitor = "monitor.cmu-agens.com"
 
 ### Parameters for streaming
-num_runs = 5
+num_runs = 10
 video_name = "BBB"
 update_period = 12
 cdn_srv_addr = cdn_host + '/videos/'
