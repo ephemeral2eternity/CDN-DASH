@@ -1,0 +1,7 @@
+#!/bin/bash
+
+runTime=$(date -d 'next hour' +'00 %H %d %m *')
+
+echo "MAILTO=\"\""
+echo "$runTime sudo python ~/CDN-DASH/verify_agent.py az.cmu-agens.com"
+echo "$runTime sudo python ~/CDN-DASH/test_qdiag_client_agent.py"
