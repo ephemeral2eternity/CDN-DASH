@@ -58,7 +58,7 @@ def updateRoute(locator, client_ip, srv_ip, qoe):
             isRouteUpdated = False
     except:
         isRouteUpdated = False
-        print "Failed to update route info to %s" % locator
+        print("Failed to update route info to %s" % locator)
 
     return isRouteUpdated
 
@@ -99,7 +99,7 @@ def updateAttribute(diagAgent, client_ip, srv_ip, qoe):
                 isUpdated = False
         except:
             isUpdated = False
-            print "Failed to update good QoE to %s" % diagAgent
+            print("Failed to update good QoE to %s" % diagAgent)
 
     return isUpdated
 
@@ -132,10 +132,10 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
         tries += 1
 
     if isSuccess:
-        print "Successfully report route from client ", client_ip, " to server ", srv_ip, " to the anomaly locator " \
-                , "agent ", locator
+        print("Successfully report route from client " + client_ip + " to server " + srv_ip + " to the anomaly locator " \
+            + "agent " + locator)
     else:
-        print "Failed to report route to anomaly locator agent:", locator
+        print("Failed to report route to anomaly locator agent:"+locator)
 
     # else:
     #    print "Route from client ", client_ip, " to server ", srv_ip, " is cached in the anomaly locator!"
@@ -165,9 +165,9 @@ def locate_anomaly(locator, client_ip, srv_ip, qoe):
         response = urllib2.urlopen(url)
         response_str = response.read()
         anomaly_info = json.loads(response_str)
-        print "Located anomaly info:", anomaly_info
+        print("Located anomaly info:"+anomaly_info)
     except:
-        print "Failed to locate the anomaly for streaming session from client ", client_ip, " to server ", srv_ip
+        print("Failed to locate the anomaly for streaming session from client "+client_ip+" to server "+srv_ip)
     return anomaly_info
 
 def diagnose_anomaly(diagAgent, client_ip, srv_ip, qoe, anomalyType):
@@ -179,9 +179,9 @@ def diagnose_anomaly(diagAgent, client_ip, srv_ip, qoe, anomalyType):
         response = urllib2.urlopen(url)
         response_str = response.read()
         anomaly_info = json.loads(response_str)
-        print "Diagnosed anomaly info:", anomaly_info
+        print("Diagnosed anomaly info:"+anomaly_info)
     except:
-        print "Failed to diagnose the anomaly for streaming session from client ", client_ip, " to server ", srv_ip
+        print("Failed to diagnose the anomaly for streaming session from client "+client_ip+" to server "+srv_ip)
     return anomaly_info
 
 def route2str(full_route):
@@ -194,16 +194,18 @@ def route2str(full_route):
 
 if __name__ == '__main__':
     # server_ip = "93.184.221.200"
-   # server_ip = "40.122.214.243"
-    server_ip = "72.21.81.200"
-    # cdn_host = "cache-01.cmu-agens.com"
-    cdn_host = "az.cmu-agens.com"
+    server_ip = "40.122.214.243"
+    #server_ip = "72.21.81.200"
+    cdn_host = "cache-01.cmu-agens.com"
+    #cdn_host = "az.cmu-agens.com"
     diagAgent = "127.0.0.1:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
-    client_info["device"] = get_device()
+    client_info["device"] = get_device(1)
     cache_client_info(diagAgent, client_info, server_ip, cdn_host)
 
+
+    '''
     qoe = {
         1488780331.39: 3.134495992,
         1488780337.99: 4.592382632,
@@ -220,7 +222,8 @@ if __name__ == '__main__':
     }
 
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
-    print isUpdated
+    print(isUpdated)
+    '''
 
     #cdn_host = "cache-01.cmu-agens.com"
     #server_ip = "40.122.214.243"

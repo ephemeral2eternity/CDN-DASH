@@ -127,7 +127,7 @@ def trVMs(vmList):
 if __name__ == "__main__":
     hops = traceroute('az.cmu-agens.com')
     # hops = traceroute('plonk.cs.uwaterloo.ca')
-    print hops
+    print(hops)
 
     hops = traceroute('93.184.221.200')
-    print hops
+    print(hops)
