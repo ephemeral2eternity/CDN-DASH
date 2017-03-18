@@ -1,0 +1,4 @@
+{
+	"Azure" : {"url" : "az.cmu-agens.com/videos", "QoE" : 5.0},
+	"Google" : {"url" : "gg.cmu-agens.com/videos", "QoE":5.0}
+}
