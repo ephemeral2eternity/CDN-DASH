@@ -5,6 +5,7 @@
 import json
 import os
 from monitor.traceroute import *
+from monitor.ping import *
 from ipinfo.ipinfo import *
 
 def read_hop_info(hopinfo_path, hop_ip):
@@ -114,15 +115,34 @@ def get_hop_by_host(cdn_host):
 
     return full_hops
 
+def get_route(server):
+    srv_ip = host2ip(server)
+    hops = traceroute(srv_ip)
+
+    client_ip, client_info = get_ext_ip()
+    hops[0] = {'ip': client_ip, 'name': client_info['name'], 'time': 0.0}
+
+    last_hop_id = max(hops.keys())
+    last_hop = hops[last_hop_id]
+
+    if (server != last_hop['name']) and (srv_ip != last_hop['ip']):
+        rtt = getMnRTT(srv_ip, 3)
+        hops[last_hop_id + 1] = {'ip':srv_ip, 'name':server, 'time':rtt}
+
+    return hops
+
 
 if __name__ == "__main__":
     ## Denote the server info
     # cdn_host = "40.122.125.188"
     # cdn_host = "aws.cmu-agens.com"
     cdn_host = "az.cmu-agens.com"
-    full_hops = get_hop_by_host(cdn_host)
-    with open("tmp-trace.json", "w") as f:
-        json.dump(full_hops, f, indent=4)
+    #full_hops = get_hop_by_host(cdn_host)
+    #with open("tmp-trace.json", "w") as f:
+    #    json.dump(full_hops, f, indent=4)
     # file_path = os.path.dirname(__file__)
     # hop_file = file_path + '/config/all_hops.json'
     # get_hop_by_user(hop_file)
+
+    route = get_route(cdn_host)
+    print route

@@ -18,26 +18,22 @@ video_name = 'BBB'
 manager = 'manage.cmu-agens.com'
 
 ## Connect cloud agent and add the client itself to available clients in the manager
-cloud_agent = connect_cloud_agent(manager)
+# monitor_agent = 'monitor.cmu-agens.com'
+monitor = '127.0.0.1:8000'
 
 ## Traceroute to the CDN to get the video session
-ext_ip, client_info = get_ext_ip()
-srv_ip = host2ip(cdn_host)
-srv_info = get_node_info(srv_ip, "server")
-## Traceroute all srvs
-cdnHops = get_hop_by_host(cdn_host)
-client_info['server'] = srv_info
-client_info['route'] = cdnHops
+route = get_route(cdn_host)
+success = report_route(monitor, route)
 
-waitRandom(1, 100)
+'''
+# waitRandom(1, 100)
 success = report_video_session(manager, client_info)
 if success:
     print "Successfully report nodes on sesssion of (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
 else:
     print "Failed to run http://manage.cmu-agens.com/verify/add_video_session!"
-
 #### Obtain verification agents
-K = 10
+K = 5
 all_nodes = get_all_nodes(manager)
 if 'client' in all_nodes.keys():
     available_agents = [agent['ip'] for agent in all_nodes['client']]
@@ -62,6 +58,8 @@ if 'client' in all_nodes.keys():
 
 else:
     print "Failed to obtain the list of clients"
+
+'''
 
 ### Get the server to start streaming
 #for i in range(1):

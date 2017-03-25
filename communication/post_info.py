@@ -198,12 +198,14 @@ if __name__ == '__main__':
     server_ip = "72.21.81.200"
     # cdn_host = "cache-01.cmu-agens.com"
     cdn_host = "az.cmu-agens.com"
-    diagAgent = "127.0.0.1:8000"
+    diagAgent = "superman.andrew.cmu.edu:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
     client_info["device"] = get_device()
+
     cache_client_info(diagAgent, client_info, server_ip, cdn_host)
 
+    '''
     qoe = {
         1488780331.39: 3.134495992,
         1488780337.99: 4.592382632,
@@ -225,7 +227,7 @@ if __name__ == '__main__':
     #cdn_host = "cache-01.cmu-agens.com"
     #server_ip = "40.122.214.243"
     # cache_client_info(diagAgent, client_info, server_ip, cdn_host)
-
+    '''
     '''
     qoe = {
         1487709075:4.134495992,
@@ -241,6 +243,7 @@ if __name__ == '__main__':
         1487709102:4.999907212,
         1487709106:4.999907212
     }
+
     # anomaly_info = locate_anomaly(locator, client_ip, server_ip, qoe)
     #isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
     # print isUpdated

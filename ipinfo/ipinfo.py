@@ -101,9 +101,6 @@ def get_node_info_from_manager(manager, ip=None, nodeType="router"):
         else:
             obtained = False
     except:
-        obtained = False
-
-    if not obtained:
         if ip:
             node_info = ipinfo(ip)
         else:

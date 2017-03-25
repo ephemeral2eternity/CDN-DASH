@@ -42,6 +42,26 @@ def report_video_session(manager, client_info):
     return isSuccess
 
 ############################################################################
+# Probe the CDN server via traceroute and report to the monitor
+# Monitor server: monitor.cmu-agens.com
+# route: the traceroute data including client and server as the first and last hops
+#############################################################################
+def report_route(monitor, route):
+    ## Debug URL
+    url = "http://%s/add_route" % monitor
+    isSuccess = True
+    try:
+        req = urllib2.Request(url)
+        req.add_header('Content-Type', 'application/json')
+        response = urllib2.urlopen(req, json.dumps(route))
+    except:
+        print "Failed to report the traceroute data to monitor " + monitor
+        isSuccess = False
+
+    return isSuccess
+
+
+############################################################################
 # Report the verification session to the centralized manager
 # Centralized manager: manage.cmu-agens.com
 # Client info: client_info
