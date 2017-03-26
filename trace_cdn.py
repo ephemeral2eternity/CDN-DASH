@@ -23,6 +23,7 @@ monitor = 'superman.andrew.cmu.edu:8000'
 
 ## Traceroute to the CDN to get the video session
 route = get_route(cdn_host)
+print(route)
 success = report_route(monitor, route)
 
 '''
