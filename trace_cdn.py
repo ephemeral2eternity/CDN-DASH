@@ -22,50 +22,6 @@ video_name = 'BBB'
 monitor = 'superman.andrew.cmu.edu:8000'
 
 ## Traceroute to the CDN to get the video session
+waitRandom(1, 100)
 route = get_route(cdn_host)
-print(route)
-success = report_route(monitor, route)
-
-'''
-# waitRandom(1, 100)
-success = report_video_session(manager, client_info)
-if success:
-    print "Successfully report nodes on sesssion of (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
-else:
-    print "Failed to run http://manage.cmu-agens.com/verify/add_video_session!"
-#### Obtain verification agents
-K = 5
-all_nodes = get_all_nodes(manager)
-if 'client' in all_nodes.keys():
-    available_agents = [agent['ip'] for agent in all_nodes['client']]
-    available_agents.remove(client_info['ip'])
-    random.shuffle(available_agents)
-    chosen_agents = available_agents[:K]
-    print chosen_agents
-
-    for agent_ip in chosen_agents:
-        agent_cdn_hops = get_hop_by_host(agent_ip)
-        srv_info = get_node_info(agent_ip, "server")
-        client_info['server'] = srv_info
-        client_info['route'] = agent_cdn_hops
-
-        waitRandom(1, 100)
-
-        success = report_verify_session(manager, client_info)
-        if success:
-            print "Successfully report nodes on session (%s, %s) to manager!" % (client_info['ip'], client_info['server']['ip'])
-        else:
-            print "Failed to run http://manage.cmu-agens.com/verify/add_verify_session!"
-
-else:
-    print "Failed to obtain the list of clients"
-
-'''
-
-### Get the server to start streaming
-#for i in range(1):
-#	## Testing rtt based server selection
-#	selected_srv_addr = cdn_host + '/videos/'
-#	client_ID, CDN_SQS, uniq_srvs = dash_client(selected_srv_addr, video_name)
-
-	# writeJson("TR_" + client_ID, all_srv_trace_data)
+ft_report_route(monitor, route)

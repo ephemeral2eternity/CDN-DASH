@@ -55,11 +55,24 @@ def report_route(monitor, route):
         req.add_header('Content-Type', 'application/json')
         response = urllib2.urlopen(req, json.dumps(route))
     except:
-        print "Failed to report the traceroute data to monitor " + monitor
+        print("Failed to report the traceroute data to monitor " + monitor)
         isSuccess = False
 
     return isSuccess
 
+############################################################################
+# Report the traceroute data to the monitor with fault tolerance
+# Monitor server: monitor.cmu-agens.com
+# route: the traceroute data including client and server as the first and last hops
+# ft_num: denotes the number that the client will try if reporting fails
+#############################################################################
+def ft_report_route(monitor, route, ft_num=3):
+    num = 0
+    while num < ft_num:
+        if report_route(monitor, route):
+            break
+        else:
+            num += 1
 
 ############################################################################
 # Report the verification session to the centralized manager

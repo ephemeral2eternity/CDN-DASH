@@ -30,8 +30,8 @@ def ipinfo(ip=None):
         resp = requests.get(url)
         hop_info = json.loads(resp.text)
     except:
-        print "[Error]Failed to get hop info from ipinfo.io, the maximum # of requests have been achieved today!"
-        print "[Error]The ip needed is :", ip
+        print("[Error]Failed to get hop info from ipinfo.io, the maximum # of requests have been achieved today!")
+        print("[Error]The ip needed is :", ip)
         exit(0)
 
     if 'org' in hop_info.keys():
@@ -153,4 +153,4 @@ if __name__ == "__main__":
     # node_ip = "62.115.40.254"
     # node_info = ipinfo(node_ip)
     node_info = ipinfo()
-    print node_info
+    print(node_info)

@@ -16,7 +16,7 @@ import urllib2
 def waitRandom(minPeriod, maxPeriod):
 	## Sleeping a random interval before starting the client agent
 	waitingTime = random.randint(minPeriod, maxPeriod)
-	print "Before running DASH on the client agent, sleep %d seconds!" % waitingTime
+	print("Before running, sleep %d seconds!" % waitingTime)
 	time.sleep(waitingTime)
 
 ## ======================================================================== 
