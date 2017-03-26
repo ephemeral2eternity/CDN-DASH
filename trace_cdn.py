@@ -15,11 +15,11 @@ from utils.test_utils import *
 cdn_host = 'az.cmu-agens.com'
 video_name = 'BBB'
 # manager = 'superman.andrew.cmu.edu:8000'
-manager = 'manage.cmu-agens.com'
+# manager = 'manage.cmu-agens.com'
 
 ## Connect cloud agent and add the client itself to available clients in the manager
 # monitor_agent = 'monitor.cmu-agens.com'
-monitor = '127.0.0.1:8000'
+monitor = 'superman.andrew.cmu.edu:8000'
 
 ## Traceroute to the CDN to get the video session
 route = get_route(cdn_host)
