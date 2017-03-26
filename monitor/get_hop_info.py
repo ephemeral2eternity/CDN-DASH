@@ -126,7 +126,7 @@ def get_route(server):
     last_hop = hops[last_hop_id]
 
     if (server != last_hop['name']) and (srv_ip != last_hop['ip']):
-        rtt = getMnRTT(srv_ip, 3)
+        rtt, _ = getMnRTT(srv_ip, 3)
         hops[last_hop_id + 1] = {'ip':srv_ip, 'name':server, 'time':rtt}
 
     return hops
