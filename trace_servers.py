@@ -1,5 +1,5 @@
 ## Streaming Videos from a CDN and do traceroute and pings to the CDN
-# trace_cdn.py
+# monitor_agent.py
 # Chen Wang, Jan. 3, 2016
 # chenw@cmu.edu
 import random

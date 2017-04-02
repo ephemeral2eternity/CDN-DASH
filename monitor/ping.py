@@ -45,7 +45,7 @@ def getMnRTT(ip, count=3):
     if len(rttList) > 0:
         mnRTT = sum(rttList) / float(len(rttList))
     else:
-        mnRTT = 500.0
+        mnRTT = 5000.0
     return mnRTT, srv_ip
 
 def parsePingRst(pingString, count):

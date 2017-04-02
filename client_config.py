@@ -23,6 +23,7 @@ probe_step = 10
 
 csv_trace_folder = os.getcwd() + "/dataQoE/"
 route_trace_folder = os.getcwd() + "/routeData/"
+monitor_trace_folder = os.getcwd() + "/monitorData/"
 qoe_trace_fields = ["TS", "Buffer", "Freezing", "QoE1", "QoE2", "Representation", "Response", "Server", "ChunkID"]
 rtt_trace_fields = ["TS", "src", "dst", "rtt"]
 
