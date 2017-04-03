@@ -6,29 +6,33 @@
 from monitor.get_hop_info import *
 from monitor.probe_closest import *
 from communication.comm_manager import *
-from communication.connect_cloud_agent import *
-import random
-from utils.test_utils import *
+from multiprocessing import freeze_support
 from utils.logger import *
+from utils.params import *
+from client_config import *
 
-## Denote the server info
-cdn_host = 'az.cmu-agens.com'
-# cdn_host = 'cache-01.cmu-agens.com'
-# manager = 'superman.andrew.cmu.edu:8000'
-# manager = 'manage.cmu-agens.com'
+def monitor_agent(mode="TR"):
+    ## Traceroute to the CDN to get the video session
+    route = get_route(cdn_host)
+    print(route)
+    success = report_route(monitor, route)
+    logJson("TR_", route)
 
-## Connect cloud agent and add the client itself to available clients in the manager
-monitor = 'monitor.cmu-agens.com'
-# monitor = 'superman.andrew.cmu.edu:8000'
+    if mode != "TR":
+        ## Probe the closest server and networks.
+        ips = get_probing_ips(monitor)
+        if len(ips) > 0:
+            latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
+            logJson("RTT_", latency_monitor)
 
-## Traceroute to the CDN to get the video session
-route = get_route(cdn_host)
-print(route)
-success = report_route(monitor, route)
-logJson("TR_", route)
+### Connect to the manager to obtain the verfification agents to ping
+if __name__ == '__main__':
+    if sys.platform == 'win32':
+        freeze_support()
 
-## Probe the closest server and networks.
-ips = get_probing_ips(monitor)
-if len(ips) > 0:
-    latency_monitor = probe_closest(monitor, ips, period=600, intvl=60)
-    logJson("RTT_", latency_monitor)
+    if len(sys.argv) > 1:
+        monitor_mode = sys.argv[1]
+    else:
+        monitor_mode = "TR"
+
+    monitor_agent(monitor_mode)
