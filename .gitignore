@@ -64,6 +64,7 @@ routeData/
 dataQoE/
 tmp/
 hopData/
+monitorData/
 data/
 config/cdn-qoes.json
 .idea/
