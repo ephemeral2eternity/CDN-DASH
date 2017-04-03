@@ -2,6 +2,7 @@ import urllib2
 import json
 import sys
 from monitor.ping import *
+from utils.params import *
 
 # Get the list of ips to probe
 def get_probing_ips(monitor):
@@ -43,7 +44,10 @@ def probe_closest(monitor, ips, period=600, intvl=60):
             time.sleep(cur_time + intvl - time.time())
         cur_time = time.time()
 
-    report_probing(monitor, all_data)
+    num_of_tries = 0
+    while (not report_probing(monitor, all_data)) and (num_of_tries < max_num_of_tries):
+        num_of_tries += 1
+
     return all_data
 
 def report_probing(monitor, data):
