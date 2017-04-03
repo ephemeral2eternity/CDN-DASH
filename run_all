@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "MAILTO=\"\""
+echo "*/10 * * * * sudo python ~/CDN-DASH/monitor_agent.py ALL"
+echo "00 * * * * sudo python ~/CDN-DASH/test_qdiag_client_agent.py"
