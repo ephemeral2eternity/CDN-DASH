@@ -10,6 +10,7 @@ from multiprocessing import freeze_support
 from utils.logger import *
 from utils.params import *
 from client_config import *
+from utils.test_utils import *
 
 def monitor_agent(mode="TR"):
     ## Traceroute to the CDN to get the video session
@@ -35,5 +36,7 @@ if __name__ == '__main__':
         monitor_mode = sys.argv[1]
     else:
         monitor_mode = "TR"
+
+    waitRandom(1, 300)
 
     monitor_agent(monitor_mode)
