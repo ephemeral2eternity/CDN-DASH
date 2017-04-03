@@ -13,10 +13,11 @@ from client_config import *
 
 def monitor_agent(mode="TR"):
     ## Traceroute to the CDN to get the video session
-    route = get_route(cdn_host)
-    print(route)
-    success = report_route(monitor, route)
-    logJson("TR_", route)
+    if mode != "RTT":
+        route = get_route(cdn_host)
+        print(route)
+        success = report_route(monitor, route)
+        logJson("TR_", route)
 
     if mode != "TR":
         ## Probe the closest server and networks.
