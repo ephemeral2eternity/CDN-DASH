@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "MAILTO=\"\""
+echo "*/10 * * * * sudo python ~/CDN-DASH/monitor_agent.py TR"
