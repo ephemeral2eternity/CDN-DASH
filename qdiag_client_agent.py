@@ -155,8 +155,10 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 			chunk_cascading_QoE = computeCasQoE(freezingTime, curBW, maxBW)
 
 			# Record QoE
-			qoe_queue[curTS] = chunk_cascading_QoE
 			abs_chunk_id = run_iter * vidLength / chunkLen + chunkNext
+
+			if abs_chunk_id > client_config.num_of_chunks_to_skip:
+				qoe_queue[curTS] = chunk_cascading_QoE
 			# add_qoe_proc = fork_add_qoe(client_config.monitor, client_config.client_ip, srv_ip, chunkNext, chunk_cascading_QoE)
 			# procs.append(add_qoe_proc)
 

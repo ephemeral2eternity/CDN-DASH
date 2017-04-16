@@ -4,9 +4,11 @@
 # chenw@cmu.edu
 import json
 import os
+import client_config
 from monitor.traceroute import *
 from monitor.ping import *
 from ipinfo.ipinfo import *
+from communication.comm_manager import *
 
 def read_hop_info(hopinfo_path, hop_ip):
     default_hop_path = hopinfo_path + hop_ip + ".json"
@@ -94,7 +96,11 @@ def get_hop_by_host(cdn_host):
     # parentPath = os.path.split(filePath)[0]
     # hop_data_folder = parentPath + '/hopData/'
 
-    hops = traceroute(cdn_host)
+    # hops = traceroute(cdn_host)
+    hops = get_route(cdn_host)
+    if client_config.reportMonitor:
+        report_route(client_config.monitor, hops)
+
     # print hops
 
     full_hops = []
@@ -137,12 +143,13 @@ if __name__ == "__main__":
     # cdn_host = "40.122.125.188"
     # cdn_host = "aws.cmu-agens.com"
     cdn_host = "az.cmu-agens.com"
-    #full_hops = get_hop_by_host(cdn_host)
+    full_hops = get_hop_by_host(cdn_host)
+    print(full_hops)
     #with open("tmp-trace.json", "w") as f:
     #    json.dump(full_hops, f, indent=4)
     # file_path = os.path.dirname(__file__)
     # hop_file = file_path + '/config/all_hops.json'
     # get_hop_by_user(hop_file)
 
-    route = get_route(cdn_host)
-    print route
+    #route = get_route(cdn_host)
+    #print route

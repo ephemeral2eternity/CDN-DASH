@@ -7,12 +7,16 @@ manager = "manage.cmu-agens.com"
 locator = "geo"
 # locator = "locator-02"
 monitor = "monitor.cmu-agens.com"
+reportMonitor = True
 
 ### Parameters for streaming
 num_runs = 5
 video_name = "BBB"
 update_period = 12
 cdn_srv_addr = cdn_host + '/videos/'
+
+## Number of chunks to skip
+num_of_chunks_to_skip = 5
 
 ## Parameter for the user device
 device_id = 1
