@@ -79,10 +79,12 @@ def get_ext_ip_from_websites():
 # ================================================================================
 def get_ext_ip():
     node_info = get_node_info()
-    ext_ip = node_info['ip']
     if not node_info:
         ext_ip = get_ext_ip_from_websites()
         node_info = ipinfo()
+    else:
+        ext_ip = node_info['ip']
+
     hostname = socket.gethostname()
     if node_info['name'] == node_info['ip']:
         node_info['name'] = hostname
