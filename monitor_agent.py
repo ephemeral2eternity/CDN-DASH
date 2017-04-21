@@ -23,9 +23,8 @@ def monitor_agent(mode="TR"):
     if mode != "TR":
         ## Probe the closest server and networks.
         ips = get_probing_ips(monitor)
-        if len(ips) > 0:
-            latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
-            logJson("RTT_", latency_monitor)
+        latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
+        logJson("RTT_", latency_monitor)
 
 ### Connect to the manager to obtain the verfification agents to ping
 if __name__ == '__main__':
@@ -37,6 +36,6 @@ if __name__ == '__main__':
     else:
         monitor_mode = "TR"
 
-    waitRandom(1, 300)
+    # waitRandom(1, 300)
 
     monitor_agent(monitor_mode)

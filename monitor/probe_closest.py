@@ -3,17 +3,19 @@ import json
 import sys
 from monitor.ping import *
 from utils.params import *
+import random
+import client_config
+from ipinfo import ipinfo
 
 # Get the list of ips to probe
 def get_probing_ips(monitor):
     url = "http://%s/get_probing_ips/" % monitor
 
-    ips = []
+    ips = {}
     try:
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)
-        data = json.load(response)
-        ips = data["ips"]
+        ips = json.load(response)
     except:
         print("Failed to get the list of ips to probe. Check if " + monitor + "is working!")
 
@@ -22,11 +24,22 @@ def get_probing_ips(monitor):
 # Obtain the round trip time to a list of ips
 def probe_ips(ips):
     latencies = {}
-    for ip in ips:
+    updated_ips = ips
+    print(updated_ips)
+    for obj in updated_ips.keys():
         cur_time = time.time()
+        if obj.startswith("network"):
+            ip = random.choice(updated_ips[obj])
+        else:
+            ip = updated_ips[obj]
         cur_lat, _ = getMnRTT(ip)
+        while (cur_lat < 0) and (obj.startswith("network")) and (len(updated_ips[obj]) > 1):
+            updated_ips[obj].remove(ip)
+            ip = random.choice(updated_ips[obj])
+            cur_lat, _ = getMnRTT(ip)
+
         latencies[ip] = {cur_time:cur_lat}
-    return latencies
+    return latencies, updated_ips
 
 # probe the closest networks/servers for a duration of time (denoted by period)
 # every intvl time
@@ -34,11 +47,14 @@ def probe_closest(monitor, ips, period=600, intvl=60):
     start_time = time.time()
     cur_time = start_time
     all_data = {}
-    for ip in ips:
-        all_data[ip] = {}
+    updated_ips = ips
+    # print(ips)
+    updated_ips["server"] = ipinfo.host2ip(client_config.cdn_host)
     while (cur_time - start_time < period):
-        cur_latencies = probe_ips(ips)
-        for ip in ips:
+        cur_latencies, updated_ips = probe_ips(updated_ips)
+        for ip in cur_latencies.keys():
+            if ip not in all_data.keys():
+                all_data[ip] = {}
             all_data[ip].update(cur_latencies[ip])
         if (time.time() < cur_time + intvl):
             time.sleep(cur_time + intvl - time.time())
@@ -68,7 +84,7 @@ def report_probing(monitor, data):
 if __name__ == "__main__":
     monitor = "superman.andrew.cmu.edu:8000"
     # ips = get_probing_ips(monitor)
-    ips = ["68.65.124.84", "128.2.208.1", "198.71.47.129", "72.21.81.200"]
-    all_lats = probe_closest(monitor, ips, 60, 10)
+    ips = {"network_31": ["195.113.161.65", "195.113.161.1"]}
+    all_lats = probe_closest(monitor, ips, 10, 5)
 
 

@@ -6,7 +6,8 @@ cdn_host = "az.cmu-agens.com"
 manager = "manage.cmu-agens.com"
 locator = "geo"
 # locator = "locator-02"
-monitor = "monitor.cmu-agens.com"
+# monitor = "monitor.cmu-agens.com"
+monitor = "superman.andrew.cmu.edu:8000"
 reportMonitor = True
 
 ### Parameters for streaming
