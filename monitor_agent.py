@@ -36,6 +36,6 @@ if __name__ == '__main__':
     else:
         monitor_mode = "TR"
 
-    # waitRandom(1, 300)
+    waitRandom(1, 300)
 
     monitor_agent(monitor_mode)
