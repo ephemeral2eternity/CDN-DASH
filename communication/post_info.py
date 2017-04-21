@@ -109,17 +109,17 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
     # isRouteCached = checkRouteCached(locator, client_ip, srv_ip)
 
     # if not isRouteCached:
-    cdnHops = get_hop_by_host(srv_ip)
-    srv_info = get_node_info(srv_ip)
+    #cdnHops = get_hop_by_host(srv_ip)
+    #srv_info = get_node_info(srv_ip)
 
-    client_info['server'] = srv_info
-    if cdnHops[-1]['ip'] != srv_info['ip']:
-        cdnHops.append(srv_info)
-    cdnHops[-1]['name'] = cdn_host
+    #client_info['server'] = srv_info
+    #if cdnHops[-1]['ip'] != srv_info['ip']:
+    #    cdnHops.append(srv_info)
+    #cdnHops[-1]['name'] = cdn_host
+    route = get_route(cdn_host)
+    client_info['route'] = route
 
-    client_info['route'] = cdnHops
-
-    outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + client_info['server']['name'] + ".json"
+    outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + cdn_host + ".json"
     with open(outJsonFileName, 'wb') as f:
         json.dump(client_info, f)
 
