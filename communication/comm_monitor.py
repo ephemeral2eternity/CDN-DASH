@@ -1,4 +1,5 @@
 import urllib2
+import json
 from monitor.ping import *
 
 def addRTT(monitor, src, dst, results):
@@ -27,3 +28,22 @@ def addQoE(monitor, src, dst, chunkID, qoe):
         print "Add QoE successfully"
     except:
         print "Failed to report QoE to %s" % monitor
+
+############################################################################
+# Probe the CDN server via traceroute and report to the monitor
+# Monitor server: monitor.cmu-agens.com
+# route: the traceroute data including client and server as the first and last hops
+#############################################################################
+def report_route_to_monitor(monitor, route):
+    ## Debug URL
+    url = "http://%s/add_route" % monitor
+    isSuccess = True
+    try:
+        req = urllib2.Request(url)
+        req.add_header('Content-Type', 'application/json')
+        response = urllib2.urlopen(req, json.dumps(route))
+    except:
+        print "Failed to report the traceroute data to monitor " + monitor
+        isSuccess = False
+
+    return isSuccess

@@ -3,6 +3,7 @@ import json
 import os
 from monitor.get_device_info import *
 from monitor.get_hop_info import *
+from communication.comm_monitor import *
 
 
 ############################################################################
@@ -29,6 +30,12 @@ def report_route(locator, client_info, isDiag=True):
 
     return isSuccess
 
+############################################################################
+# Check if the route has been cached before
+# Cloud agent: locator
+# Client info: client_info
+# Whether it is QWatch or QDiag system: isDiag = True represents QDiag System
+#############################################################################
 def checkRouteCached(locator, client_ip, srv_ip):
     url = "http://%s/locator/exist?client=%s&server=%s" % (locator, client_ip, srv_ip)
 
@@ -117,6 +124,10 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
     #    cdnHops.append(srv_info)
     #cdnHops[-1]['name'] = cdn_host
     route = get_route(cdn_host)
+    try:
+        success = report_route_to_monitor(client_config.monitor, route)
+    except:
+        print("Failed to report the route to the monitor: " + client_config.monitor)
     client_info['route'] = route
 
     outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + cdn_host + ".json"
@@ -198,27 +209,28 @@ if __name__ == '__main__':
     server_ip = "72.21.81.200"
     # cdn_host = "cache-01.cmu-agens.com"
     cdn_host = "az.cmu-agens.com"
-    diagAgent = "superman.andrew.cmu.edu:8000"
+    # diagAgent = "superman.andrew.cmu.edu:8000"
+    diagAgent = "127.0.0.1:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
     client_info["device"] = get_device()
 
     cache_client_info(diagAgent, client_info, server_ip, cdn_host)
 
-    '''
+
     qoe = {
-        1488780331.39: 3.134495992,
-        1488780337.99: 4.592382632,
-        1488780340.52: 3.648497786,
-        1488780341.89: 3.648497786,
-        1488780358.54: 1.43717794897,
-        1488780362.21:  1.26574473389,
-        1488780365.25: 1.26574473389,
-        1488780367.19: 1.26574473389,
-        1488780369.37: 1.26574473389,
-        1488780370.86: 0.134495992112,
-        1488780373.65: 1.26574473389,
-        1488780375.27: 1.26574473389
+        1493007108.39: 3.134495992,
+        1493007109.99: 4.592382632,
+        1493007110.52: 3.648497786,
+        1493007111.89: 3.648497786,
+        1493007112.54: 1.43717794897,
+        1493007113.21:  1.26574473389,
+        1493007114.25: 1.26574473389,
+        1493007115.19: 1.26574473389,
+        1493007116.37: 1.26574473389,
+        1493007117.86: 0.134495992112,
+        1493007118.65: 1.26574473389,
+        1493007119.27: 1.26574473389
     }
 
     isUpdated = updateAttribute(diagAgent, client_ip, server_ip, qoe)
@@ -227,13 +239,13 @@ if __name__ == '__main__':
     #cdn_host = "cache-01.cmu-agens.com"
     #server_ip = "40.122.214.243"
     # cache_client_info(diagAgent, client_info, server_ip, cdn_host)
-    '''
+
     '''
     qoe = {
-        1487709075:4.134495992,
-        1487709076:3.592382632,
-        1487709077:4.648497786,
-        1487709078:4.648497786,
+        1493005608:4.134495992,
+        1493005609:3.592382632,
+        1493005610:4.648497786,
+        1493005611:4.648497786,
         1487709083:4.999907212,
         1487709087:4.999907212,
         1487709089:4.999907212,

@@ -132,6 +132,9 @@ def post_node_info_to_manager(manager, node_info):
 
 if __name__ == "__main__":
     # hop_name = "et-5-0-0.120.rtr.eqny.net.internet2.edu"
+    node_info = ipinfo()
+    manager = "manage.cmu-agens.com"
+    post_node_info_to_manager(manager, node_info)
     '''
     hop_name = "10.50.20.61"
     if is_hostname(hop_name):
@@ -152,5 +155,3 @@ if __name__ == "__main__":
 
     # node_ip = "62.115.40.254"
     # node_info = ipinfo(node_ip)
-    node_info = ipinfo()
-    print node_info

@@ -5,7 +5,7 @@
 #### Pick up 10 nodes to do traceroute and get the verify agents
 from monitor.get_hop_info import *
 from monitor.probe_closest import *
-from communication.comm_manager import *
+from communication.comm_monitor import *
 from multiprocessing import freeze_support
 from utils.logger import *
 from utils.params import *
@@ -17,7 +17,7 @@ def monitor_agent(mode="TR"):
     if mode != "RTT":
         route = get_route(cdn_host)
         print(route)
-        success = report_route(monitor, route)
+        success = report_route_to_monitor(monitor, route)
         logJson("TR_", route)
 
     if mode != "TR":
