@@ -28,17 +28,21 @@ def probe_ips(ips):
     print(updated_ips)
     for obj in updated_ips.keys():
         cur_time = time.time()
-        if obj.startswith("network"):
-            ip = random.choice(updated_ips[obj])
+        if obj.startswith("net"):
+            if len(updated_ips[obj]) > 0:
+                ip = random.choice(updated_ips[obj])
+            else:
+                continue
         else:
             ip = updated_ips[obj]
+
         cur_lat, _ = getMnRTT(ip)
         while (cur_lat < 0) and (obj.startswith("network")) and (len(updated_ips[obj]) > 1):
             updated_ips[obj].remove(ip)
             ip = random.choice(updated_ips[obj])
             cur_lat, _ = getMnRTT(ip)
 
-        latencies[ip] = {cur_time:cur_lat}
+            latencies[ip] = {cur_time:cur_lat}
     return latencies, updated_ips
 
 # probe the closest networks/servers for a duration of time (denoted by period)
