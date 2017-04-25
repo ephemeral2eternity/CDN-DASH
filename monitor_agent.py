@@ -10,6 +10,7 @@ from multiprocessing import freeze_support
 from utils.logger import *
 from utils.params import *
 from client_config import *
+from ipinfo import ipinfo
 from utils.test_utils import *
 
 def monitor_agent(mode="TR"):
@@ -23,6 +24,9 @@ def monitor_agent(mode="TR"):
     if mode != "TR":
         ## Probe the closest server and networks.
         ips = get_probing_ips(monitor)
+        if mode != "RTT":
+            ips["server"] = ipinfo.host2ip(client_config.cdn_host)
+
         latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
         logJson("RTT_", latency_monitor)
 

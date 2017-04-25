@@ -5,7 +5,6 @@ from monitor.ping import *
 from utils.params import *
 import random
 import client_config
-from ipinfo import ipinfo
 
 # Get the list of ips to probe
 def get_probing_ips(monitor):
@@ -53,7 +52,7 @@ def probe_closest(monitor, ips, period=60, intvl=5):
     all_data = {}
     updated_ips = ips
     # print(ips)
-    updated_ips["server"] = ipinfo.host2ip(client_config.cdn_host)
+    # updated_ips["server"] = ipinfo.host2ip(client_config.cdn_host)
     while (cur_time - start_time < period):
         cur_latencies, updated_ips = probe_ips(updated_ips)
         # print(cur_latencies)
