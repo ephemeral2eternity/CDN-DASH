@@ -111,7 +111,7 @@ def updateAttribute(diagAgent, client_ip, srv_ip, qoe):
     return isUpdated
 
 
-def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
+def cache_client_info(locator, client_info, cdn_host, isDiag=True):
     client_ip = client_info['ip']
     # isRouteCached = checkRouteCached(locator, client_ip, srv_ip)
 
@@ -124,13 +124,16 @@ def cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
     #    cdnHops.append(srv_info)
     #cdnHops[-1]['name'] = cdn_host
     route = get_route(cdn_host)
+    hop_ids = sorted(route.keys(), key=int)
+    srv_ip = route[hop_ids[-1]]['ip']
+
     try:
         success = report_route_to_monitor(client_config.monitor, route)
     except:
         print("Failed to report the route to the monitor: " + client_config.monitor)
     client_info['route'] = route
 
-    outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + cdn_host + ".json"
+    outJsonFileName = os.getcwd() + "/routeData/" + client_info['name'] + "-" + srv_ip + ".json"
     with open(outJsonFileName, 'wb') as f:
         json.dump(client_info, f)
 
@@ -205,19 +208,20 @@ def route2str(full_route):
 
 if __name__ == '__main__':
     # server_ip = "93.184.221.200"
-   # server_ip = "40.122.214.243"
-    server_ip = "72.21.81.200"
+    server_ip = "54.192.19.89"
+    # server_ip = "72.21.81.200"
     # cdn_host = "cache-01.cmu-agens.com"
-    cdn_host = "az.cmu-agens.com"
+    cdn_host = "aws.cmu-agens.com"
     # diagAgent = "superman.andrew.cmu.edu:8000"
     diagAgent = "127.0.0.1:8000"
     client_ip, client_info = get_ext_ip()
     client = client_info["name"]
     client_info["device"] = get_device()
 
-    cache_client_info(diagAgent, client_info, server_ip, cdn_host)
+    cache_client_info(diagAgent, client_info, cdn_host)
 
 
+    '''
     qoe = {
         1493007108.39: 3.134495992,
         1493007109.99: 4.592382632,
@@ -239,6 +243,7 @@ if __name__ == '__main__':
     #cdn_host = "cache-01.cmu-agens.com"
     #server_ip = "40.122.214.243"
     # cache_client_info(diagAgent, client_info, server_ip, cdn_host)
+    '''
 
     '''
     qoe = {

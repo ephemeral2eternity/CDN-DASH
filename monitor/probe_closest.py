@@ -42,12 +42,12 @@ def probe_ips(ips):
             ip = random.choice(updated_ips[obj])
             cur_lat, _ = getMnRTT(ip)
 
-            latencies[ip] = {cur_time:cur_lat}
+        latencies[ip] = {cur_time:cur_lat}
     return latencies, updated_ips
 
 # probe the closest networks/servers for a duration of time (denoted by period)
 # every intvl time
-def probe_closest(monitor, ips, period=600, intvl=60):
+def probe_closest(monitor, ips, period=60, intvl=5):
     start_time = time.time()
     cur_time = start_time
     all_data = {}
@@ -56,6 +56,7 @@ def probe_closest(monitor, ips, period=600, intvl=60):
     updated_ips["server"] = ipinfo.host2ip(client_config.cdn_host)
     while (cur_time - start_time < period):
         cur_latencies, updated_ips = probe_ips(updated_ips)
+        # print(cur_latencies)
         for ip in cur_latencies.keys():
             if ip not in all_data.keys():
                 all_data[ip] = {}

@@ -102,7 +102,7 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 
 	for run_iter in range(num_runs):
 		## Fork a process doing traceroute to srv_ip and report it to the locator.
-		tr_proc = fork_cache_client_info(diag_agent, client_info, srv_ip, client_config.cdn_host, True)
+		tr_proc = fork_cache_client_info(diag_agent, client_info, client_config.cdn_host, True)
 		procs.append(tr_proc)
 
 		print("Streaming in the " + str(run_iter) + " loop.")
@@ -124,7 +124,7 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 				srv_ip = chunk_srv_ip
 				eventType = "SRV_CHANGE"
 				## Fork a process doing traceroute to srv_ip and report it to the locator.
-				tr_proc = fork_cache_client_info(diag_agent, client_info, srv_ip, client_config.cdn_host)
+				tr_proc = fork_cache_client_info(diag_agent, client_info, client_config.cdn_host)
 				procs.append(tr_proc)
 				event_proc = fork_add_event(diag_agent, client_ip, eventType, pre_srv_ip, srv_ip)
 				procs.append(event_proc)

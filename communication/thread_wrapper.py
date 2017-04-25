@@ -2,8 +2,8 @@ from multiprocessing import Process, freeze_support
 from communication.post_info import *
 from comm_monitor import *
 
-def fork_cache_client_info(locator, client_info, srv_ip, cdn_host, isDiag=True):
-    p = Process(target=cache_client_info, args=(locator, client_info, srv_ip, cdn_host, isDiag))
+def fork_cache_client_info(locator, client_info, cdn_host, isDiag=True):
+    p = Process(target=cache_client_info, args=(locator, client_info, cdn_host, isDiag))
     p.start()
     return p
 
