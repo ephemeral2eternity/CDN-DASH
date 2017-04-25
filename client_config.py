@@ -2,11 +2,12 @@
 import os
 
 # cdn_host = "cache-01.cmu-agens.com"
-cdn_host = "aws.cmu-agens.com"
+# cdn_host = "aws.cmu-agens.com"
+cdn_host = "az.cmu-agens.com"
 # cdn_host = "gcdn.cmu-agens.com"
 manager = "manage.cmu-agens.com"
-locator = "local"
-# locator = "geo"
+# locator = "local"
+locator = "geo"
 # locator = "locator-02"
 monitor = "monitor.cmu-agens.com"
 # monitor = "superman.andrew.cmu.edu:8000"
