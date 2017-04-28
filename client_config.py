@@ -14,7 +14,7 @@ monitor = "monitor.cmu-agens.com"
 reportMonitor = True
 
 ### Parameters for streaming
-num_runs = 1
+num_runs = 5
 video_name = "BBB"
 update_period = 12
 cdn_srv_addr = cdn_host + '/videos/'
