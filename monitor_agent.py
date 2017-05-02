@@ -30,6 +30,7 @@ def monitor_agent(mode="TR"):
         latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
         logJson("RTT_", latency_monitor)
 
+
 ### Connect to the manager to obtain the verfification agents to ping
 if __name__ == '__main__':
     if sys.platform == 'win32':

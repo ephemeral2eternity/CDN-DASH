@@ -186,7 +186,7 @@ def qdiag_client_agent(diag_agent, client_info, qoe_writer, num_runs):
 			#	qoe_queue = {}
 
 			## Detect anomalies or send updates periodically
-			if len(qoe_queue) > client_config.update_period:
+			if len(qoe_queue) >= client_config.update_period:
 				# recent_qoes, mnQoE = get_recent_qoes(qoe_queue)
 				update_p = fork_update_attributes(diag_agent, client_ip, srv_ip, qoe_queue)
 				procs.append(update_p)

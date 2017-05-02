@@ -14,7 +14,7 @@ monitor = "monitor.cmu-agens.com"
 reportMonitor = True
 
 ### Parameters for streaming
-num_runs = 1
+num_runs = 5
 video_name = "BBB"
 update_period = 12
 cdn_srv_addr = cdn_host + '/videos/'
@@ -24,10 +24,6 @@ num_of_chunks_to_skip = 5
 
 ## Parameter for the user device
 device_id = 1
-
-### Parameters for verify agents
-duration_to_probe = 3600
-probe_step = 10
 
 csv_trace_folder = os.getcwd() + "/dataQoE/"
 route_trace_folder = os.getcwd() + "/routeData/"
