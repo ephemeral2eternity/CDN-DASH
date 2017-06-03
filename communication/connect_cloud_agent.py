@@ -22,7 +22,10 @@ def get_cloud_agents(manager):
 
 def get_my_cloud_agent(manager, name="geo"):
     my_cloud_agent = {}
-    if (name == "geo") or (name == "net"):
+    if name == "qrank":
+        my_cloud_agent["name"] = "qrank"
+        my_cloud_agent["ip"] = "qrank.cmu-agens.com"
+    elif (name == "geo") or (name == "net"):
         url = "http://%s/client/getLocator?method=%s" % (manager, name)
 
         try:
