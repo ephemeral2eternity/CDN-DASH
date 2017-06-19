@@ -40,12 +40,15 @@ def get_my_cloud_agent(manager, name="geo"):
     elif name == "superman":
         my_cloud_agent["name"] = "superman"
         my_cloud_agent["ip"] = "superman.andrew.cmu.edu:8000"
-    else:
+    elif "locator" in name:
         cloud_agents = get_cloud_agents(manager)
         for cloud_agent in cloud_agents:
             if cloud_agent["name"] == name:
                 my_cloud_agent = cloud_agent
                 break
+    else:
+        my_cloud_agent["name"] = name
+        my_cloud_agent["ip"] = host2ip(name)
 
     return my_cloud_agent
 
