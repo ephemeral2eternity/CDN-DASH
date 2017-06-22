@@ -10,7 +10,11 @@
     - st: http://az.cmu-agens.com/demo.html?vidID=st
 
 2. Usage
-  * `python test_cdn_client.py cdn_url video_name`
+  * DASH Client to stream videos from a CDN url
+    - `python test_cdn_client.py cdn_url video_name`
+  * QRank DASH Client with QoE Anomaly Identification reported to Cloud agent: qrank.cmu-agens.com
+    - `python CDN-DASH/test_qdiag_client_agent.py`
+    - Configure monitor agent, cloud agent and manager agent in client_config.py
 
 3. Requirements
   * System libraries required:
