@@ -13,4 +13,7 @@
   * `python test_cdn_client.py cdn_url video_name`
 
 3. Requirements
-* `sudo apt-get install traceroute`
+  * System libraries required:
+    - `sudo apt-get install traceroute`
+    - `sudo apt-get install python-pip`
+  * Python libraries required: requirements.txt
