@@ -11,3 +11,6 @@
 
 2. Usage
   * `python test_cdn_client.py cdn_url video_name`
+
+3. Requirements
+* `sudo apt-get install traceroute`
