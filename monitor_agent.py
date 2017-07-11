@@ -13,22 +13,34 @@ from client_config import *
 from ipinfo import ipinfo
 from utils.test_utils import *
 
-def monitor_agent(mode="TR"):
+def route2ips(route):
+    ips = []
+    for hop_id in route.keys():
+        if (int(hop_id) > 0) and (route[hop_id]["ip"] != "*"):
+            ips.append(route[hop_id]["ip"])
+    return ips
+
+def monitor_agent():
     ## Traceroute to the CDN to get the video session
-    if mode != "RTT":
-        route = get_route(cdn_host)
-        print(route)
-        success = report_route_to_monitor(monitor, route)
-        logJson("TR_", route)
+    start_ts = time.time()
+    route = get_route(cdn_host)
+    print(route)
+    success = report_route_to_monitor(monitor, route)
+    logJson("TR_", route)
+    duration = time.time() - start_ts
+    print("The total time to obtain traceroute from the CDN is: %.2f seconds!" % duration)
 
-    if mode != "TR":
-        ## Probe the closest server and networks.
-        ips = get_probing_ips(monitor)
-        if mode != "RTT":
-            ips["server"] = ipinfo.host2ip(client_config.cdn_host)
 
-        latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
-        logJson("RTT_", latency_monitor)
+
+    ## Probe the closest server and networks.
+    start_ts = time.time()
+    ips = route2ips(route)
+    lats = probe_ips(ips)
+    logCSV("RTT_", lats)
+    duration = time.time() - start_ts
+    print("The total time to probe all ips in the route is: %.2f seconds!" % duration)
+    # latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
+    # logJson("RTT_", latency_monitor)
 
 
 ### Connect to the manager to obtain the verfification agents to ping
@@ -41,6 +53,5 @@ if __name__ == '__main__':
     else:
         monitor_mode = "TR"
 
-    waitRandom(1, 300)
-
-    monitor_agent(monitor_mode)
+    # waitRandom(1, 300)
+    monitor_agent()

@@ -3,18 +3,17 @@ import os
 
 # cdn_host = "cache-01.cmu-agens.com"
 # cdn_host = "aws.cmu-agens.com"
-cdn_host = "az.cmu-agens.com"
+cdn_host = "verizon.cmu-agens.com"
 # cdn_host = "gcdn.cmu-agens.com"
 manager = "manage.cmu-agens.com"
 # locator = "local"
-# locator = "geo"
-locator = "locator-01"
+locator = "geo"
 monitor = "monitor.cmu-agens.com"
 # monitor = "superman.andrew.cmu.edu:8000"
 reportMonitor = True
 
 ### Parameters for streaming
-num_runs = 5
+num_runs = 1
 video_name = "BBB"
 update_period = 12
 cdn_srv_addr = cdn_host + '/videos/'
@@ -29,7 +28,7 @@ csv_trace_folder = os.getcwd() + "/dataQoE/"
 route_trace_folder = os.getcwd() + "/routeData/"
 monitor_trace_folder = os.getcwd() + "/monitorData/"
 qoe_trace_fields = ["TS", "Buffer", "Freezing", "QoE1", "QoE2", "Representation", "Response", "Server", "ChunkID"]
-rtt_trace_fields = ["TS", "src", "dst", "rtt"]
+rtt_trace_fields = ["TS", "src", "dst", "rttMean", "rttMin", "rttMax", "rttStd", "rttLoss"]
 
 try:
     os.stat(csv_trace_folder)

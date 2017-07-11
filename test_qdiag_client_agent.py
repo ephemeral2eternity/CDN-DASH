@@ -33,7 +33,7 @@ if __name__ == '__main__':
 	device_info = get_device(client_config.device_id)
 	client_info['device'] = device_info
 	## Create Trace CSV file
-	cur_ts = time.strftime("%m%d%H%M%S")
+	cur_ts = time.strftime("%m%d")
 	client_ID = client_name + "_" + cur_ts
 	client_info['id'] = client_ID
 
@@ -47,9 +47,13 @@ if __name__ == '__main__':
 	### Initialize the trace writer
 	## ==================================================================================================
 	qoe_trace_file = client_ID + "_QoE.csv"
-	out_qoe_trace = open(client_config.csv_trace_folder + qoe_trace_file, 'wb')
-	qoe_csv_writer = csv.DictWriter(out_qoe_trace, fieldnames=client_config.qoe_trace_fields)
-	qoe_csv_writer.writeheader()
+	if os.path.exists(client_config.csv_trace_folder + qoe_trace_file):
+		out_qoe_trace = open(client_config.csv_trace_folder + qoe_trace_file, 'ab')
+		qoe_csv_writer = csv.DictWriter(out_qoe_trace, fieldnames=client_config.qoe_trace_fields)
+	else:
+		out_qoe_trace = open(client_config.csv_trace_folder + qoe_trace_file, 'wb')
+		qoe_csv_writer = csv.DictWriter(out_qoe_trace, fieldnames=client_config.qoe_trace_fields)
+		qoe_csv_writer.writeheader()
 
 	# for i in range(num_runs):
 	qdiag_client_agent(diag_agent, client_info, qoe_csv_writer, num_runs)

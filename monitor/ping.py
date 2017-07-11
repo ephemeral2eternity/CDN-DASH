@@ -5,6 +5,12 @@ from subprocess import Popen, PIPE
 import re
 import sys
 import time
+from math import sqrt
+from get_hop_info import *
+
+def stddev(lst):
+    mean = float(sum(lst)) / len(lst)
+    return sqrt(float(reduce(lambda x, y: x + y, map(lambda x: (x - mean) ** 2, lst))) / len(lst))
 
 def extract_number(s):
     regex=r'[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?'
@@ -36,7 +42,7 @@ def ping(ip, count):
         cmd = ['ping', '-c', str(count), ip]
     process = Popen(cmd, stdout=PIPE, stderr=PIPE)
     stdout, stderr = process.communicate()
-    print stdout
+    # print stdout
     rttList, srv_ip = parsePingRst(stdout, count)
     return rttList, srv_ip
 
@@ -47,6 +53,23 @@ def getMnRTT(ip, count=3):
     else:
         mnRTT = -20.0
     return mnRTT, srv_ip
+
+def getRTTStat(ip, count=3):
+    rttList, srv_ip = ping(ip, count)
+    if len(rttList) > 0:
+        loss = 1 - len(rttList)/float(count)
+        mnRTT = sum(rttList) / float(len(rttList))
+        maxRTT = max(rttList)
+        minRTT = min(rttList)
+        stdRTT = stddev(rttList)
+    else:
+        loss = 1.0
+        mnRTT = -1.0
+        maxRTT = -1.0
+        minRTT = -1.0
+        stdRTT = -1.0
+
+    return {"TS" : time.time(), "dst": srv_ip, "rttLoss":loss, "rttMean":mnRTT, "rttMax":maxRTT, "rttMin":minRTT, "rttStd":stdRTT}
 
 def parsePingRst(pingString, count):
     rtts = []
@@ -67,17 +90,7 @@ def parsePingRst(pingString, count):
                 srv_ip = tmp.group()
     return rtts, srv_ip
 
-def pingVMs(vmList):
-    srvRTTs = {}
-    srvNames = vmList.keys()
-    for srv in srvNames:
-        mnRTT = getMnRTT(vmList[srv], 5)
-        srvRTTs[srv] = mnRTT
-    return srvRTTs
-
 
 if __name__ == "__main__":
-    time_start = time.time()
-    mnRTT, srv_ip = getMnRTT('az.cmu-agens.com')
-    duration = time.time() -  time_start
-    print srv_ip, mnRTT, duration
+    latStats = getRTTStat('verizon.cmu-agens.com', 10)
+    print latStats
