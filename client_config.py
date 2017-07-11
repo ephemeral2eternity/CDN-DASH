@@ -13,7 +13,8 @@ monitor = "monitor.cmu-agens.com"
 reportMonitor = True
 
 ### Parameters for streaming
-num_runs = 1
+wait_time = 300
+num_runs = 5
 video_name = "BBB"
 update_period = 12
 cdn_srv_addr = cdn_host + '/videos/'
@@ -22,13 +23,12 @@ cdn_srv_addr = cdn_host + '/videos/'
 num_of_chunks_to_skip = 5
 
 ## Parameter for the user device
-device_id = 1
+device_id = 0
 
 csv_trace_folder = os.getcwd() + "/dataQoE/"
 route_trace_folder = os.getcwd() + "/routeData/"
 monitor_trace_folder = os.getcwd() + "/monitorData/"
 qoe_trace_fields = ["TS", "Buffer", "Freezing", "QoE1", "QoE2", "Representation", "Response", "Server", "ChunkID"]
-rtt_trace_fields = ["TS", "src", "dst", "rttMean", "rttMin", "rttMax", "rttStd", "rttLoss"]
 
 try:
     os.stat(csv_trace_folder)

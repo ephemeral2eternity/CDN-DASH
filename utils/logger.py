@@ -5,16 +5,16 @@ import csv
 import client_config
 from utils.client_utils import *
 
-def logJson(fileNamePrefix, data):
+def logJson(fileNameSuffix, data):
     dataFolder = client_config.monitor_trace_folder
     try:
         os.stat(dataFolder)
     except:
         os.mkdir(dataFolder)
 
-    client_name = getMyName()
+    client_ip, _ = get_ext_ip()
     cur_ts = time.strftime("%m%d%H%M%S")
-    fileName = dataFolder + fileNamePrefix + "_" + client_name + "_" + cur_ts + ".json"
+    fileName = dataFolder + client_ip + "_" + cur_ts + fileNameSuffix + ".json"
     with open(fileName, "w") as f:
         json.dump(data, f, indent=4, sort_keys=True)
 
@@ -23,11 +23,11 @@ def logJson(fileNamePrefix, data):
 # @input : client_ID --- the client ID to write traces
 # 		   client_tr --- the client trace dictionary
 ## ==================================================================================================
-def logCSV(fileNamePrefix, data):
-    client_name = getMyName()
+def logCSV(fileNameSuffix, data):
+    client_ip, _ = get_ext_ip()
     cur_ts = time.strftime("%m%d")
-    client_ID = client_name + "_" + cur_ts
-    fileName = fileNamePrefix + client_ID
+    client_ID = client_ip + "_" + cur_ts
+    fileName = client_ID + "_" + fileNameSuffix
 
     dataFolder = client_config.monitor_trace_folder
     try:

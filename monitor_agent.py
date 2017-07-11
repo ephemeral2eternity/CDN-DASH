@@ -16,29 +16,28 @@ from utils.test_utils import *
 def route2ips(route):
     ips = []
     for hop_id in route.keys():
-        if (int(hop_id) > 0) and (route[hop_id]["ip"] != "*"):
+        if (int(hop_id) > 0) and (route[hop_id]["ip"] != "*") and (not ipinfo.is_reserved(route[hop_id]["ip"])):
             ips.append(route[hop_id]["ip"])
     return ips
 
-def monitor_agent():
+def monitor_agent(period=3000, intvl=300):
     ## Traceroute to the CDN to get the video session
     start_ts = time.time()
-    route = get_route(cdn_host)
-    print(route)
-    success = report_route_to_monitor(monitor, route)
-    logJson("TR_", route)
-    duration = time.time() - start_ts
-    print("The total time to obtain traceroute from the CDN is: %.2f seconds!" % duration)
+    cur_ts = time.time()
+    while cur_ts < start_ts + period:
+        route = get_route(cdn_host)
+        print("%d seconds passed after probing!" % (cur_ts - start_ts))
+        print(route)
+        success = report_route_to_monitor(monitor, route)
+        logJson("_TR", route)
+        pre_ts = cur_ts
+        cur_ts = time.time()
 
-
-
-    ## Probe the closest server and networks.
-    start_ts = time.time()
-    ips = route2ips(route)
-    lats = probe_ips(ips)
-    logCSV("RTT_", lats)
-    duration = time.time() - start_ts
-    print("The total time to probe all ips in the route is: %.2f seconds!" % duration)
+        while cur_ts < pre_ts + intvl:
+            ips = route2ips(route)
+            lats = probe_ips(ips)
+            logCSV("_RTT", lats)
+            cur_ts = time.time()
     # latency_monitor = probe_closest(monitor, ips, period=monitor_period, intvl=monitor_intvl)
     # logJson("RTT_", latency_monitor)
 
@@ -48,10 +47,5 @@ if __name__ == '__main__':
     if sys.platform == 'win32':
         freeze_support()
 
-    if len(sys.argv) > 1:
-        monitor_mode = sys.argv[1]
-    else:
-        monitor_mode = "TR"
-
-    # waitRandom(1, 300)
+    waitRandom(1, client_config.wait_time)
     monitor_agent()

@@ -3,10 +3,30 @@
 # Chen Wang, Oct. 23, 2015
 # chenw@cmu.edu
 import random
+import os
+import platform
 
 def get_device(dev_id=0):
     device_info = {}
-    if dev_id == 1:
+    if dev_id == 0:
+        node_name = platform.node()
+        if "azuser" in node_name:
+            device_info["device"] = "azure"
+        elif "MacBook" in node_name:
+            device_info["device"] = "MacBook"
+        elif "PC" in node_name:
+            device_info["device"] = "PC"
+        else:
+            device_info["device"] = "PlanetLab"
+
+        if "Linux" in platform.system():
+            device_info["os"] = " ".join(platform.linux_distribution())
+        else:
+            device_info["os"] = platform.system()
+
+        device_info["browser"] = "Python " + platform.python_version()
+        device_info["player"] = "EM-DASH"
+    elif dev_id == 1:
         device_info["device"] = "Desktop"
         device_info["os"] = "Microsoft Windows 10"
         device_info["browser"] = "Chrome"

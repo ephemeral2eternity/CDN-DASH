@@ -22,7 +22,7 @@ if __name__ == '__main__':
 	else:
 		num_runs = client_config.num_runs
 
-	waitRandom(1, 300)
+	waitRandom(1, client_config.wait_time)
 	## ==================================================================================================
 	# Get Client INFO, streaming configuration file, CDN server and route to the CDN and report the route
 	# INFO to the anomaly locator agent
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 	client_info['device'] = device_info
 	## Create Trace CSV file
 	cur_ts = time.strftime("%m%d")
-	client_ID = client_name + "_" + cur_ts
+	client_ID = client_ip + "_" + cur_ts
 	client_info['id'] = client_ID
 
 	## ==================================================================================================
