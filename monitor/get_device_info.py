@@ -5,18 +5,14 @@
 import random
 import os
 import platform
+import re
 
 def get_device(dev_id=0):
     device_info = {}
     if dev_id == 0:
         node_name = platform.node()
         if "azuser" in node_name:
-            if "a0" in node_name:
-                device_info["device"] = "azure_a0"
-            elif "a2" in node_name:
-                device_info["device"] = "azure_a2"
-            else:
-                device_info["device"] = "azure_unknown"
+            device_info["device"] = re.sub(r'-.+?-', '_', node_name)
         elif "MacBook" in node_name:
             device_info["device"] = "MacBook"
         elif "PC" in node_name:
