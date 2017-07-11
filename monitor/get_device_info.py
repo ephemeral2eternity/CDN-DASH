@@ -11,7 +11,12 @@ def get_device(dev_id=0):
     if dev_id == 0:
         node_name = platform.node()
         if "azuser" in node_name:
-            device_info["device"] = "azure"
+            if "a0" in node_name:
+                device_info["device"] = "azure_a0"
+            elif "a2" in node_name:
+                device_info["device"] = "azure_a2"
+            else:
+                device_info["device"] = "azure_unknown"
         elif "MacBook" in node_name:
             device_info["device"] = "MacBook"
         elif "PC" in node_name:
