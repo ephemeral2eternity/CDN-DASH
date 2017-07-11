@@ -27,7 +27,7 @@ def logCSV(fileNameSuffix, data):
     client_ip, _ = get_ext_ip()
     cur_ts = time.strftime("%m%d")
     client_ID = client_ip + "_" + cur_ts
-    fileName = client_ID + "_" + fileNameSuffix
+    fileName = client_ID + "_" + fileNameSuffix + ".csv"
 
     dataFolder = client_config.monitor_trace_folder
     try:
